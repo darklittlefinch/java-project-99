@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class DataInitializer implements ApplicationRunner {
 
-    private final String ADMIN_EMAIL = "hexlet@example.com";
-    private final String ADMIN_PASSWORD = "qwerty";
+    private static final String ADMIN_EMAIL = "hexlet@example.com";
+    private static final String ADMIN_PASSWORD = "qwerty";
 
     @Autowired
     private UserRepository userRepository;
