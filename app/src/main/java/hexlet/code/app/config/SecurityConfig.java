@@ -39,13 +39,10 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(mvcMatcherBuilder.pattern("/welcome")).permitAll()
-                        .requestMatchers(mvcMatcherBuilder.pattern("/login")).permitAll()
-                        .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/users")).permitAll()
-                        .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/users")).permitAll()
-                        .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/users/{id}")).permitAll()
-                        .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.PUT, "/users/{id}")).permitAll()
-                        .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.DELETE, "/users/{id}")).permitAll()
+                        .requestMatchers(mvcMatcherBuilder.pattern("/api/")).permitAll()
+                        .requestMatchers(mvcMatcherBuilder.pattern("/api/welcome")).permitAll()
+                        .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/api/login")).permitAll()
+//                        .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/api/users")).permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer(rs -> rs.jwt(jwt -> jwt.decoder(jwtDecoder)))
