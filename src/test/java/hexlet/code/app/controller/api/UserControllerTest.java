@@ -1,4 +1,4 @@
-package hexlet.code.app.controller;
+package hexlet.code.app.controller.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;

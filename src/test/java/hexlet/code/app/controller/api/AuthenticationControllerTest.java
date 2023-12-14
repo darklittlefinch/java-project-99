@@ -1,4 +1,4 @@
-package hexlet.code.app.controller;
+package hexlet.code.app.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.app.dto.AuthRequest;
