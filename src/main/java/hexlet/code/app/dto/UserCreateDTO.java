@@ -19,5 +19,5 @@ public class UserCreateDTO {
     private String email;
 
     @NotBlank
-    private String passwordDigest;
+    private String password;
 }

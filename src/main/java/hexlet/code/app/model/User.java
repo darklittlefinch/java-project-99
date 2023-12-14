@@ -48,7 +48,7 @@ public class User implements BaseEntity, UserDetails {
     @Column(unique = true)
     private String email;
 
-    private String passwordDigest;
+    private String password;
 
     @CreatedDate
     private LocalDate createdAt;
@@ -58,7 +58,7 @@ public class User implements BaseEntity, UserDetails {
 
     @Override
     public String getPassword() {
-        return passwordDigest;
+        return password;
     }
 
     @Override

@@ -24,7 +24,7 @@ public class DataInitializer implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         var admin = new User();
         admin.setEmail(UserUtils.ADMIN_EMAIL);
-        admin.setPasswordDigest(UserUtils.ADMIN_PASSWORD);
+        admin.setPassword(UserUtils.ADMIN_PASSWORD);
 
         userService.createUser(admin);
     }
