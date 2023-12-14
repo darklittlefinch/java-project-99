@@ -35,14 +35,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, HandlerMappingIntrospector introspector)
             throws Exception {
-        var mvcMatcherBuilder = new MvcRequestMatcher.Builder(introspector);
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(mvcMatcherBuilder.pattern("/api/")).permitAll()
-                        .requestMatchers(mvcMatcherBuilder.pattern("/api/welcome")).permitAll()
-                        .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/api/login")).permitAll()
-//                        .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/api/users")).permitAll()
+                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/api/").permitAll()
+                        .requestMatchers("/api/welcome").permitAll()
+                        .requestMatchers("/api/login").permitAll()
+                        .requestMatchers("/index.html").permitAll()
+                        .requestMatchers("/assets/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer(rs -> rs.jwt(jwt -> jwt.decoder(jwtDecoder)))
