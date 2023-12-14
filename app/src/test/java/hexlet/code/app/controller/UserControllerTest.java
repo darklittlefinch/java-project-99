@@ -3,18 +3,20 @@ package hexlet.code.app.controller;
 import static org.assertj.core.api.Assertions.assertThat;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import hexlet.code.app.util.UserUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hexlet.code.app.model.User;
 import hexlet.code.app.repository.UserRepository;
+import hexlet.code.app.util.TestUtils;
 import net.datafaker.Faker;
-import org.instancio.Instancio;
-import org.instancio.Select;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -40,21 +42,19 @@ public class UserControllerTest {
     @Autowired
     private ObjectMapper om;
 
-    public User generateUser() {
-        return Instancio.of(User.class)
-                .ignore(Select.field(User::getId))
-                .ignore(Select.field(User::getCreatedAt))
-                .ignore(Select.field(User::getUpdatedAt))
-                .supply(Select.field(User::getFirstName), () -> faker.name().firstName())
-                .supply(Select.field(User::getLastName), () -> faker.name().lastName())
-                .supply(Select.field(User::getEmail), () -> faker.internet().emailAddress())
-                .supply(Select.field(User::getPasswordDigest), () -> faker.internet().password())
-                .create();
+    @Autowired
+    private TestUtils testUtils;
+
+    private JwtRequestPostProcessor token;
+
+    @BeforeEach
+    public void setUp() {
+        token = jwt().jwt(builder -> builder.subject(UserUtils.ADMIN_EMAIL));
     }
 
     @Test
     public void testIndex() throws Exception {
-        var result = mockMvc.perform(get("/users"))
+        var result = mockMvc.perform(get("/api/users").with(token))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -63,10 +63,10 @@ public class UserControllerTest {
 
     @Test
     public void testShow() throws Exception {
-        var user = generateUser();
+        var user = testUtils.generateUser();
         userRepository.save(user);
 
-        var result = mockMvc.perform(get("/users/" + user.getId()))
+        var result = mockMvc.perform(get("/api/users/" + user.getId()).with(token))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -83,9 +83,10 @@ public class UserControllerTest {
     public void testCreate() throws Exception {
         var usersCount = userRepository.count();
 
-        var user = generateUser();
+        var user = testUtils.generateUser();
 
-        var request = post("/users")
+        var request = post("/api/users")
+                .with(token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(user));
 
@@ -107,16 +108,18 @@ public class UserControllerTest {
 
     @Test
     public void testUpdate() throws Exception {
-        var user = generateUser();
+        var user = testUtils.generateUser();
         userRepository.save(user);
 
         var usersCount = userRepository.count();
         var oldEmail = user.getEmail();
+        token = jwt().jwt(builder -> builder.subject(oldEmail));
 
         var data = new HashMap<>();
         data.put("email", "new@gmail.com");
 
-        var request = put("/users/" + user.getId())
+        var request = put("/api/users/" + user.getId())
+                .with(token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(data));
 
@@ -131,17 +134,53 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testDestroy() throws Exception {
-        var user = generateUser();
+    public void testUpdateWrongUser() throws Exception {
+        var user = testUtils.generateUser();
         userRepository.save(user);
+        var oldEmail = user.getEmail();
+
+        var data = new HashMap<>();
+        data.put("email", "new@gmail.com");
+
+        var request = put("/api/users/" + user.getId())
+                .with(token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(om.writeValueAsString(data));
+
+        mockMvc.perform(request)
+                .andExpect(status().isForbidden());
+
+        assertThat(userRepository.findByEmail(oldEmail)).isPresent();
+        assertThat(userRepository.findByEmail("new@gmail.com")).isEmpty();
+    }
+
+    @Test
+    public void testDestroy() throws Exception {
+        var user = testUtils.generateUser();
+        userRepository.save(user);
+        token = jwt().jwt(builder -> builder.subject(user.getEmail()));
 
         var usersCount = userRepository.count();
 
-        mockMvc.perform(delete("/users/" + user.getId()))
+        mockMvc.perform(delete("/api/users/" + user.getId()).with(token))
                 .andExpect(status().isNoContent());
 
         assertThat(userRepository.count()).isEqualTo(usersCount - 1);
         assertThat(userRepository.findById(user.getId())).isEmpty();
+    }
+
+    @Test
+    public void testDestroyWrongUser() throws Exception {
+        var user = testUtils.generateUser();
+        userRepository.save(user);
+
+        var usersCount = userRepository.count();
+
+        mockMvc.perform(delete("/api/users/" + user.getId()).with(token))
+                .andExpect(status().isForbidden());
+
+        assertThat(userRepository.count()).isEqualTo(usersCount);
+        assertThat(userRepository.findById(user.getId())).isPresent();
     }
 
     @Test
