@@ -9,6 +9,7 @@ import hexlet.code.app.mapper.UserMapper;
 import hexlet.code.app.repository.UserRepository;
 import hexlet.code.app.util.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,6 +26,9 @@ public class UserService {
     @Autowired
     private UserUtils userUtils;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public List<UserDTO> getAll() {
         var users = userRepository.findAll();
         return users.stream()
@@ -40,6 +44,10 @@ public class UserService {
 
     public UserDTO create(UserCreateDTO dto) {
         var user = userMapper.map(dto);
+
+        var hashedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashedPassword);
+
         userRepository.save(user);
         return userMapper.map(user);
     }
