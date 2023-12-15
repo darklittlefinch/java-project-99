@@ -6,6 +6,8 @@ spring:
   output:
     ansi:
       enabled: always
+  profiles:
+    default: dev
 
 rsa:
   private-key: classpath:certs/private.pem
