@@ -104,6 +104,9 @@ public class UserControllerTest {
         );
 
         assertThat(userRepository.findByEmail(user.getEmail())).isPresent();
+
+        var userPassword = userRepository.findByEmail(user.getEmail()).get().getId();
+        assertThat(userPassword).isNotEqualTo(user.getPassword());
     }
 
     @Test
@@ -184,7 +187,8 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testAdmin() {
+    public void testIsAdminPresent() {
         assertThat(userRepository.findByEmail("hexlet@example.com")).isPresent();
     }
+
 }
