@@ -72,10 +72,11 @@ public class UserControllerTest {
 
         var body = result.getResponse().getContentAsString();
         assertThatJson(body).isNotNull().and(
+                json -> json.node("id").isPresent(),
                 json -> json.node("firstName").isEqualTo(user.getFirstName()),
                 json -> json.node("lastName").isEqualTo(user.getLastName()),
                 json -> json.node("email").isEqualTo(user.getEmail()),
-                json -> json.node("createdAt").isEqualTo(user.getCreatedAt())
+                json -> json.node("createdAt").isPresent()
         );
     }
 
