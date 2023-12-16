@@ -85,6 +85,7 @@ public class UserControllerTest {
         var usersCount = userRepository.count();
 
         var user = testUtils.generateUser();
+        var userPassword = user.getPassword();
 
         var request = post("/api/users")
                 .with(token)
@@ -106,13 +107,14 @@ public class UserControllerTest {
 
         assertThat(userRepository.findByEmail(user.getEmail())).isPresent();
 
-        var userPassword = userRepository.findByEmail(user.getEmail()).get().getId();
-        assertThat(userPassword).isNotEqualTo(user.getPassword());
+        var userHashedPassword = userRepository.findByEmail(user.getEmail()).get().getPassword();
+        assertThat(userPassword).isNotEqualTo(userHashedPassword);
     }
 
     @Test
     public void testUpdate() throws Exception {
         var user = testUtils.generateUser();
+        var userPassword = user.getPassword();
         userRepository.save(user);
 
         var usersCount = userRepository.count();
@@ -135,6 +137,9 @@ public class UserControllerTest {
         assertThat(userRepository.count()).isEqualTo(usersCount);
         assertThat(user.getEmail()).isEqualTo("new@gmail.com");
         assertThat(userRepository.findByEmail(oldEmail)).isEmpty();
+
+        var userHashedPassword = userRepository.findByEmail(user.getEmail()).get().getPassword();
+        assertThat(userPassword).isNotEqualTo(userHashedPassword);
     }
 
     @Test

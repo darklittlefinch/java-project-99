@@ -62,6 +62,10 @@ public class UserService {
             throw new AccessDeniedException("Access denied");
         } else {
             userMapper.update(dto, user);
+
+            var hashedPassword = passwordEncoder.encode(user.getPassword());
+            user.setPassword(hashedPassword);
+
             userRepository.save(user);
             return userMapper.map(user);
         }
