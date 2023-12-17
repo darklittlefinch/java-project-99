@@ -30,7 +30,7 @@ public class TaskStatus implements BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ToString.Include
     @EqualsAndHashCode.Include
-    private String id;
+    private Long id;
 
     @ToString.Include
     @Column(unique = true)
