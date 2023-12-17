@@ -20,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor;
 import org.springframework.test.web.servlet.MockMvc;
+import hexlet.code.app.repository.TaskStatusRepository;
 
 import java.util.HashMap;
 
@@ -93,7 +94,7 @@ public class TaskStatusControllerTest {
         );
 
         assertThat(taskStatusRepository.findBySlug(taskStatus.getSlug())).isPresent();
-        assertThat(taskStatusRepository.count()).isEqualo(taskStatusesCount + 1);
+        assertThat(taskStatusRepository.count()).isEqualTo(taskStatusesCount + 1);
     }
 
     @Test
@@ -115,7 +116,7 @@ public class TaskStatusControllerTest {
         mockMvc.perform(request)
                 .andExpect(status().isOk());
 
-        taskStatus = taskStatusRepository.findById(taskStatus.getId());
+        taskStatus = taskStatusRepository.findById(taskStatus.getId()).get();
 
         assertThat(taskStatusRepository.count()).isEqualTo(taskStatusesCount);
         assertThat(taskStatus.getSlug()).isEqualTo("newSlug");
@@ -124,7 +125,7 @@ public class TaskStatusControllerTest {
     }
 
     @Test
-    public void testDestroy() {
+    public void testDestroy() throws Exception {
         var taskStatus = testUtils.generateTaskStatus();
         taskStatusRepository.save(taskStatus);
 

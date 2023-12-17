@@ -1,5 +1,6 @@
 package hexlet.code.app.util;
 
+import hexlet.code.app.model.TaskStatus;
 import hexlet.code.app.model.User;
 import net.datafaker.Faker;
 import org.instancio.Instancio;
@@ -34,6 +35,6 @@ public class TestUtils {
                 .ignore(Select.field(TaskStatus::getCreatedAt))
                 .supply(Select.field(TaskStatus::getName), () -> faker.lorem().word())
                 .supply(Select.field(TaskStatus::getSlug), () -> faker.lorem().word())
-                .create;
+                .create();
     }
 }
