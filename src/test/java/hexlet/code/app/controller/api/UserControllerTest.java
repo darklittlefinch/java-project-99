@@ -16,7 +16,6 @@ import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequ
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.app.repository.UserRepository;
 import hexlet.code.app.util.TestUtils;
-import net.datafaker.Faker;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
