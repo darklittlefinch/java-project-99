@@ -123,6 +123,7 @@ public class UserControllerTest {
 
         var data = new HashMap<>();
         data.put("email", "new@gmail.com");
+        data.put("firstName", "Elisa");
 
         var request = put("/api/users/" + user.getId())
                 .with(token)
@@ -136,6 +137,7 @@ public class UserControllerTest {
 
         assertThat(userRepository.count()).isEqualTo(usersCount);
         assertThat(user.getEmail()).isEqualTo("new@gmail.com");
+        assertThat(user.getFirstName()).isEqualTo("Elisa");
         assertThat(userRepository.findByEmail(oldEmail)).isEmpty();
 
         var userHashedPassword = userRepository.findByEmail(user.getEmail()).get().getPassword();
