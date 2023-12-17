@@ -98,6 +98,20 @@ public class TaskStatusControllerTest {
     }
 
     @Test
+    public void testCreateWithoutAuthorization() throws Exception {
+        var taskStatus = testUtils.generateTaskStatus();
+
+        var request = post("/api/task_statuses")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(om.writeValueAsString(taskStatus));
+
+        mockMvc.perform(request)
+                .andExpect(status().isUnauthorized());
+
+        assertThat(taskStatusRepository.findBySlug(taskStatus.getSlug())).isEmpty();
+    }
+
+    @Test
     public void testUpdate() throws Exception {
         var taskStatus = testUtils.generateTaskStatus();
         taskStatusRepository.save(taskStatus);
@@ -125,6 +139,25 @@ public class TaskStatusControllerTest {
     }
 
     @Test
+    public void testUpdateWithoutAuthorization() throws Exception {
+        var taskStatus = testUtils.generateTaskStatus();
+        taskStatusRepository.save(taskStatus);
+
+        var data = new HashMap<>();
+        data.put("slug", "newSlug");
+
+        var request = put("/api/task_statuses/" + taskStatus.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(om.writeValueAsString(data));
+
+        mockMvc.perform(request)
+                .andExpect(status().isUnauthorized());
+
+        assertThat(taskStatusRepository.findBySlug(taskStatus.getSlug())).isPresent();
+        assertThat(taskStatusRepository.findBySlug("newSlug")).isEmpty();
+    }
+
+    @Test
     public void testDestroy() throws Exception {
         var taskStatus = testUtils.generateTaskStatus();
         taskStatusRepository.save(taskStatus);
@@ -136,5 +169,16 @@ public class TaskStatusControllerTest {
 
         assertThat(taskStatusRepository.count()).isEqualTo(taskStatusesCount - 1);
         assertThat(taskStatusRepository.findById(taskStatus.getId())).isEmpty();
+    }
+
+    @Test
+    public void testDestroyWithoutAuthorization() throws Exception {
+        var taskStatus = testUtils.generateTaskStatus();
+        taskStatusRepository.save(taskStatus);
+
+        mockMvc.perform(delete("/api/task_statuses/" + taskStatus.getId()))
+                .andExpect(status().isUnauthorized());
+
+        assertThat(taskStatusRepository.findBySlug(taskStatus.getSlug())).isPresent();
     }
 }
