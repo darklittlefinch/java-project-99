@@ -34,9 +34,6 @@ public class UserControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private Faker faker;
-
-    @Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -54,11 +51,8 @@ public class UserControllerTest {
 
     @Test
     public void testIndex() throws Exception {
-        var result = mockMvc.perform(get("/api/users").with(token))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        var body = result.getResponse().getContentAsString();
+        mockMvc.perform(get("/api/users").with(token))
+                .andExpect(status().isOk());
     }
 
     @Test
