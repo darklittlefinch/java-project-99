@@ -25,4 +25,12 @@ public class UserUtils {
         var email = authentication.getName();
         return userRepository.findByEmail(email).get();
     }
+
+    @Bean
+    public User getAdmin() {
+        var admin = new User();
+        admin.setEmail(UserUtils.ADMIN_EMAIL);
+        admin.setPassword(UserUtils.ADMIN_PASSWORD);
+        return admin;
+    }
 }
