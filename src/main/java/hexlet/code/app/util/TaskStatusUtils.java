@@ -4,25 +4,29 @@ import hexlet.code.app.model.TaskStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class TaskStatusUtils {
-    public static final String DRAFT_NAME = "Draft...";
-    public static final String DRAFT_SLUG = "draft";
-
-    public static final String TO_REVIEW_NAME = "To review...";
-    public static final String TO_REVIEW_SLUG = "to_review";
-
-    public static final String TO_BE_FIXED_NAME = "To be fixed...";
-    public static final String TO_BE_FIXED_SLUG = "to_be_fixed";
-
-    public static final String TO_PUBLISH_NAME = "To publish...";
-    public static final String TO_PUBLISH_SLUG = "to_publish";
-
-    public static final String PUBLISHED_NAME = "Published!";
-    public static final String PUBLISHED_SLUG = "published";
 
     @Bean
-    public TaskStatus getTaskStatus(String name, String slug) {
+    public List<TaskStatus> getDefaultTaskStatuses() {
+        var draftStatus = getTaskStatus("Draft...", "draft");
+        var toReviewStatus = getTaskStatus("To review...", "to_review");
+        var toBeFixedStatus = getTaskStatus("To be fixed...", "to_be_fixed");
+        var toPublishStatus = getTaskStatus("To publish...", "to_publish");
+        var publishedStatus = getTaskStatus("Published!", "published");
+
+        return List.of(
+                draftStatus,
+                toReviewStatus,
+                toBeFixedStatus,
+                toPublishStatus,
+                publishedStatus
+        );
+    }
+
+    private TaskStatus getTaskStatus(String name, String slug) {
         var taskStatus = new TaskStatus();
 
         taskStatus.setName(name);
