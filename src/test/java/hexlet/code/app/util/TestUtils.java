@@ -2,6 +2,7 @@ package hexlet.code.app.util;
 
 import hexlet.code.app.model.TaskStatus;
 import hexlet.code.app.model.User;
+import hexlet.code.app.model.Task;
 import net.datafaker.Faker;
 import org.instancio.Instancio;
 import org.instancio.Select;
@@ -14,6 +15,12 @@ public class TestUtils {
 
     @Autowired
     private Faker faker;
+
+    @Autowired
+    private UserUtils userUtils;
+
+    @Autowired
+    private TaskStatusUtils taskStatusUtils;
 
     @Bean
     public User generateUser() {
@@ -35,6 +42,19 @@ public class TestUtils {
                 .ignore(Select.field(TaskStatus::getCreatedAt))
                 .supply(Select.field(TaskStatus::getName), () -> faker.lorem().word())
                 .supply(Select.field(TaskStatus::getSlug), () -> faker.lorem().word())
+                .create();
+    }
+
+    @Bean
+    public Task generateTask() {
+        return Instancio.of(Task.class)
+                .ignore(Select.field(Task::getId))
+                .ignore(Select.field(Task::getCreatedAt))
+                .supply(Select.field(Task::getName), () -> faker.lorem().word())
+                .supply(Select.field(Task::getIndex), () -> faker.number().digit())
+                .supply(Select.field(Task::getDescription), () -> faker.lorem().sentence())
+                .supply(Select.field(Task::getTaskStatus), () -> taskStatusUtils.getDefaultTaskStatuses().get(0))
+                .supply(Select.field(Task::getAssignee), () -> userUtils.getAdmin())
                 .create();
     }
 }
