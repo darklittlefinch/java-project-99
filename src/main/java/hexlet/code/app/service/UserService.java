@@ -4,6 +4,7 @@ import hexlet.code.app.dto.UserCreateDTO;
 import hexlet.code.app.dto.UserDTO;
 import hexlet.code.app.dto.UserUpdateDTO;
 import hexlet.code.app.exception.AccessDeniedException;
+import hexlet.code.app.exception.AssociatedWithEntityException;
 import hexlet.code.app.exception.ResourceNotFoundException;
 import hexlet.code.app.mapper.UserMapper;
 import hexlet.code.app.repository.UserRepository;
@@ -76,8 +77,10 @@ public class UserService {
 
         if (currentUser == null || !currentUser.getId().equals(id)) {
             throw new AccessDeniedException("Access denied");
-        } else {
-            userRepository.deleteById(id);
+        } else if (!currentUser.getTasks().isEmpty()) {
+            throw new AssociatedWithEntityException("You still have some tasks!");
         }
+
+        userRepository.deleteById(id);
     }
 }
