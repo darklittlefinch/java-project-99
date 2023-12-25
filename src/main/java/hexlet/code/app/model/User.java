@@ -54,9 +54,11 @@ public class User implements BaseEntity, UserDetails {
     private String password;
 
     @CreatedDate
+    @ToString.Include
     private Instant createdAt;
 
     @LastModifiedDate
+    @ToString.Include
     private Instant updatedAt;
 
     @OneToMany(mappedBy = "assignee", cascade = CascadeType.MERGE, orphanRemoval = true)
