@@ -3,6 +3,8 @@ package hexlet.code.app.util;
 import hexlet.code.app.model.TaskStatus;
 import hexlet.code.app.model.User;
 import hexlet.code.app.model.Task;
+import hexlet.code.app.repository.TaskStatusRepository;
+import hexlet.code.app.repository.UserRepository;
 import net.datafaker.Faker;
 import org.instancio.Instancio;
 import org.instancio.Select;
@@ -22,6 +24,12 @@ public class TestUtils {
     @Autowired
     private TaskStatusUtils taskStatusUtils;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private TaskStatusRepository taskStatusRepository;
+
     @Bean
     public User generateUser() {
         return Instancio.of(User.class)
@@ -37,24 +45,47 @@ public class TestUtils {
 
     @Bean
     public TaskStatus generateTaskStatus() {
+        var slug = getRandomTaskStatusSlug();
         return Instancio.of(TaskStatus.class)
                 .ignore(Select.field(TaskStatus::getId))
                 .ignore(Select.field(TaskStatus::getCreatedAt))
-                .supply(Select.field(TaskStatus::getName), () -> faker.lorem().word())
-                .supply(Select.field(TaskStatus::getSlug), () -> faker.lorem().word())
+                .supply(Select.field(TaskStatus::getSlug), () -> slug)
+                .supply(Select.field(TaskStatus::getName), () -> slug)
                 .create();
+    }
+
+    private String getRandomTaskStatusSlug() {
+        var slug = "";
+        do {
+            slug = faker.lorem().word().toLowerCase();
+        } while (taskStatusRepository.findBySlug(slug).isPresent());
+        return slug;
     }
 
     @Bean
     public Task generateTask() {
-        return Instancio.of(Task.class)
+        var task = Instancio.of(Task.class)
                 .ignore(Select.field(Task::getId))
                 .ignore(Select.field(Task::getCreatedAt))
+                .ignore(Select.field(Task::getAssignee))
+                .ignore(Select.field(Task::getTaskStatus))
                 .supply(Select.field(Task::getName), () -> faker.lorem().word())
-                .supply(Select.field(Task::getIndex), () -> faker.number().digit())
+                .supply(Select.field(Task::getIndex), () -> faker.number().randomNumber())
                 .supply(Select.field(Task::getDescription), () -> faker.lorem().sentence())
-                .supply(Select.field(Task::getTaskStatus), () -> taskStatusUtils.getDefaultTaskStatuses().get(0))
-                .supply(Select.field(Task::getAssignee), () -> userUtils.getAdmin())
+//                .supply(Select.field(Task::getTaskStatus), () -> taskStatusUtils.getDefaultTaskStatuses().get(0))
+//                .supply(Select.field(Task::getAssignee), () -> userUtils.getAdmin())
                 .create();
+
+        var assignee = generateUser();
+        userRepository.save(assignee);
+        task.setAssignee(assignee);
+
+        var taskStatus = generateTaskStatus();
+        taskStatusRepository.save(taskStatus);
+        task.setTaskStatus(taskStatus);
+
+//        task.setAssignee(userUtils.getAdmin());
+//        task.setTaskStatus(taskStatusUtils.getDefaultTaskStatuses().get(0));
+        return task;
     }
 }
