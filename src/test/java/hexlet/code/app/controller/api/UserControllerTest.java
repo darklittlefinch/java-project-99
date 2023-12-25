@@ -110,8 +110,11 @@ public class UserControllerTest {
         var userPassword = user.getPassword();
         userRepository.save(user);
 
-        var usersCount = userRepository.count();
+        var createdAt = user.getCreatedAt();
+        var updatedAt = user.getUpdatedAt();
         var oldEmail = user.getEmail();
+        var usersCount = userRepository.count();
+
         token = jwt().jwt(builder -> builder.subject(oldEmail));
 
         var data = new HashMap<>();
@@ -132,6 +135,9 @@ public class UserControllerTest {
         assertThat(user.getEmail()).isEqualTo("new@gmail.com");
         assertThat(user.getFirstName()).isEqualTo("Elisa");
         assertThat(userRepository.findByEmail(oldEmail)).isEmpty();
+
+//        assertThat(user.getCreatedAt().toString()).isEqualTo(createdAt.toString());
+//        assertThat(user.getUpdatedAt().toString()).isNotEqualTo(updatedAt.toString());
 
         var userHashedPassword = userRepository.findByEmail(user.getEmail()).get().getPassword();
         assertThat(userPassword).isNotEqualTo(userHashedPassword);
