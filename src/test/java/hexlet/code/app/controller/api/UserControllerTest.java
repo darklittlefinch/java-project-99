@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import hexlet.code.app.repository.TaskRepository;
 import hexlet.code.app.util.UserUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor;
@@ -34,6 +35,9 @@ public class UserControllerTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private TaskRepository taskRepository;
 
     @Autowired
     private ObjectMapper om;
@@ -191,6 +195,21 @@ public class UserControllerTest {
 
         assertThat(userRepository.count()).isEqualTo(usersCount);
         assertThat(userRepository.findById(user.getId())).isPresent();
+    }
+
+    @Test
+    public void testDestroyButUserHasTasks() throws Exception {
+        var user = testUtils.generateUser();
+        var task = testUtils.generateTask();
+        user.addTask(task);
+
+        userRepository.save(user);
+        taskRepository.save(task);
+
+        token = jwt().jwt(builder -> builder.subject(user.getEmail()));
+
+        mockMvc.perform(delete("/api/users/" + user.getId()).with(token))
+                .andExpect(status().isMethodNotAllowed());
     }
 
     @Test

@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hexlet.code.app.repository.TaskRepository;
 import hexlet.code.app.util.TestUtils;
 import hexlet.code.app.util.UserUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +34,9 @@ public class TaskStatusControllerTest {
 
     @Autowired
     private TaskStatusRepository taskStatusRepository;
+
+    @Autowired
+    private TaskRepository taskRepository;
 
     @Autowired
     private ObjectMapper om;
@@ -180,6 +184,19 @@ public class TaskStatusControllerTest {
                 .andExpect(status().isUnauthorized());
 
         assertThat(taskStatusRepository.findBySlug(taskStatus.getSlug())).isPresent();
+    }
+
+    @Test
+    public void testDestroyButStatusIsUsing() throws Exception {
+        var taskStatus = testUtils.generateTaskStatus();
+        var task = testUtils.generateTask();
+        taskStatus.addTask(task);
+
+        taskStatusRepository.save(taskStatus);
+        taskRepository.save(task);
+
+        mockMvc.perform(delete("/api/task_statuses/" + taskStatus.getId()).with(token))
+                .andExpect(status().isMethodNotAllowed());
     }
 
     @Test
