@@ -1,6 +1,7 @@
 package hexlet.code.app.handler;
 
 import hexlet.code.app.exception.AccessDeniedException;
+import hexlet.code.app.exception.AssociatedWithEntityException;
 import hexlet.code.app.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,5 +20,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<String> handleAccessDeniedException(AccessDeniedException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(AssociatedWithEntityException.class)
+    public ResponseEntity<String> handleAssociatedWithEntityException(AssociatedWithEntityException ex) {
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(ex.getMessage());
     }
 }
