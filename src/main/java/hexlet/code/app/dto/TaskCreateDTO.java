@@ -10,15 +10,15 @@ import lombok.Setter;
 @Setter
 public class TaskCreateDTO {
     @NotBlank
-    private String name;
+    private String title;
 
     @Column(unique = true)
     private Long index;
 
-    private String description;
+    private String content;
 
     private Long assigneeId;
 
     @NotNull
-    private String taskStatusSlug;
+    private String status;
 }
