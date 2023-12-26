@@ -3,6 +3,7 @@ package hexlet.code.app.service;
 import hexlet.code.app.dto.labelDto.LabelCreateDTO;
 import hexlet.code.app.dto.labelDto.LabelDTO;
 import hexlet.code.app.dto.labelDto.LabelUpdateDTO;
+import hexlet.code.app.exception.AssociatedWithEntityException;
 import hexlet.code.app.exception.ResourceNotFoundException;
 import hexlet.code.app.mapper.LabelMapper;
 import hexlet.code.app.repository.LabelRepository;
@@ -47,6 +48,12 @@ public class LabelService {
     }
 
     public void delete(Long id) {
+        var label = labelRepository.findById(id);
+
+        if (label.isPresent() && !label.get().getTasks().isEmpty()) {
+            throw new AssociatedWithEntityException("Some task still has this label!");
+        }
+
         labelRepository.deleteById(id);
     }
 }
