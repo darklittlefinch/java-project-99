@@ -1,8 +1,10 @@
 package hexlet.code.app.util;
 
+import hexlet.code.app.model.Label;
 import hexlet.code.app.model.TaskStatus;
 import hexlet.code.app.model.User;
 import hexlet.code.app.model.Task;
+import hexlet.code.app.repository.LabelRepository;
 import hexlet.code.app.repository.TaskStatusRepository;
 import hexlet.code.app.repository.UserRepository;
 import net.datafaker.Faker;
@@ -30,6 +32,9 @@ public class TestUtils {
     @Autowired
     private TaskStatusRepository taskStatusRepository;
 
+    @Autowired
+    private LabelRepository labelRepository;
+
     @Bean
     public User generateUser() {
         return Instancio.of(User.class)
@@ -45,7 +50,7 @@ public class TestUtils {
 
     @Bean
     public TaskStatus generateTaskStatus() {
-        var slug = getRandomTaskStatusSlug();
+        var slug = getRandomUniqueTaskStatusSlug();
         return Instancio.of(TaskStatus.class)
                 .ignore(Select.field(TaskStatus::getId))
                 .ignore(Select.field(TaskStatus::getCreatedAt))
@@ -54,7 +59,7 @@ public class TestUtils {
                 .create();
     }
 
-    private String getRandomTaskStatusSlug() {
+    private String getRandomUniqueTaskStatusSlug() {
         var slug = "";
         do {
             slug = faker.lorem().word().toLowerCase();
@@ -72,8 +77,6 @@ public class TestUtils {
                 .supply(Select.field(Task::getName), () -> faker.lorem().word())
                 .supply(Select.field(Task::getIndex), () -> faker.number().randomNumber())
                 .supply(Select.field(Task::getDescription), () -> faker.lorem().sentence())
-//                .supply(Select.field(Task::getTaskStatus), () -> taskStatusUtils.getDefaultTaskStatuses().get(0))
-//                .supply(Select.field(Task::getAssignee), () -> userUtils.getAdmin())
                 .create();
 
         var assignee = generateUser();
@@ -84,8 +87,24 @@ public class TestUtils {
         taskStatusRepository.save(taskStatus);
         task.setTaskStatus(taskStatus);
 
-//        task.setAssignee(userUtils.getAdmin());
-//        task.setTaskStatus(taskStatusUtils.getDefaultTaskStatuses().get(0));
         return task;
+    }
+
+    @Bean
+    public Label generateLabel() {
+        var name = getRandomUniqueLabelName();
+        return Instancio.of(Label.class)
+                .ignore(Select.field(Label::getId))
+                .ignore(Select.field(Label::getCreatedAt))
+                .supply(Select.field(Label::getName), () -> name)
+                .create();
+    }
+
+    private String getRandomUniqueLabelName() {
+        var name = "";
+        do {
+            name = faker.lorem().word().toLowerCase();
+        } while (labelRepository.findByName(name).isPresent());
+        return name;
     }
 }
