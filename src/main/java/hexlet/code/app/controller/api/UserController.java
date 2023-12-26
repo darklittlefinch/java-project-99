@@ -1,8 +1,8 @@
 package hexlet.code.app.controller.api;
 
-import hexlet.code.app.dto.UserCreateDTO;
-import hexlet.code.app.dto.UserDTO;
-import hexlet.code.app.dto.UserUpdateDTO;
+import hexlet.code.app.dto.userDto.UserCreateDTO;
+import hexlet.code.app.dto.userDto.UserDTO;
+import hexlet.code.app.dto.userDto.UserUpdateDTO;
 import hexlet.code.app.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

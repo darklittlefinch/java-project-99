@@ -1,8 +1,8 @@
 package hexlet.code.app.controller.api;
 
-import hexlet.code.app.dto.TaskCreateDTO;
-import hexlet.code.app.dto.TaskDTO;
-import hexlet.code.app.dto.TaskUpdateDTO;
+import hexlet.code.app.dto.taskDto.TaskCreateDTO;
+import hexlet.code.app.dto.taskDto.TaskDTO;
+import hexlet.code.app.dto.taskDto.TaskUpdateDTO;
 import hexlet.code.app.service.TaskService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

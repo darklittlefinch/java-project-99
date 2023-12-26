@@ -1,8 +1,8 @@
 package hexlet.code.app.service;
 
-import hexlet.code.app.dto.UserCreateDTO;
-import hexlet.code.app.dto.UserDTO;
-import hexlet.code.app.dto.UserUpdateDTO;
+import hexlet.code.app.dto.userDto.UserCreateDTO;
+import hexlet.code.app.dto.userDto.UserDTO;
+import hexlet.code.app.dto.userDto.UserUpdateDTO;
 import hexlet.code.app.exception.AccessDeniedException;
 import hexlet.code.app.exception.AssociatedWithEntityException;
 import hexlet.code.app.exception.ResourceNotFoundException;
