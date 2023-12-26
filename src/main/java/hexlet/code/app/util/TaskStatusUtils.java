@@ -10,11 +10,11 @@ import java.util.List;
 public class TaskStatusUtils {
     @Bean
     public List<TaskStatus> getDefaultTaskStatuses() {
-        var draftStatus = getTaskStatus("Draft", "draft");
-        var toReviewStatus = getTaskStatus("To review", "to_review");
-        var toBeFixedStatus = getTaskStatus("To be fixed", "to_be_fixed");
-        var toPublishStatus = getTaskStatus("To publish", "to_publish");
-        var publishedStatus = getTaskStatus("Published", "published");
+        var draftStatus = createTaskStatus("Draft", "draft");
+        var toReviewStatus = createTaskStatus("To review", "to_review");
+        var toBeFixedStatus = createTaskStatus("To be fixed", "to_be_fixed");
+        var toPublishStatus = createTaskStatus("To publish", "to_publish");
+        var publishedStatus = createTaskStatus("Published", "published");
 
         return List.of(
                 draftStatus,
@@ -25,7 +25,7 @@ public class TaskStatusUtils {
         );
     }
 
-    private TaskStatus getTaskStatus(String name, String slug) {
+    private TaskStatus createTaskStatus(String name, String slug) {
         var taskStatus = new TaskStatus();
 
         taskStatus.setName(name);
