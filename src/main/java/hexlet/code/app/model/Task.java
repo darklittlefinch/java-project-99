@@ -58,7 +58,7 @@ public class Task implements BaseEntity {
     @CreatedDate
     private Instant createdAt;
 
-    @ManyToMany(mappedBy = "taskLabels", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private List<Label> labels;
 
     public void addLabel(Label label) {

@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.app.repository.LabelRepository;
+import hexlet.code.app.repository.TaskRepository;
 import hexlet.code.app.util.TestUtils;
 import hexlet.code.app.util.UserUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,6 +35,9 @@ public class LabelControllerTest {
 
     @Autowired
     private LabelRepository labelRepository;
+
+    @Autowired
+    private TaskRepository taskRepository;
 
     @Autowired
     private ObjectMapper om;
@@ -134,5 +138,21 @@ public class LabelControllerTest {
 
         assertThat(labelRepository.count()).isEqualTo(labelsCount - 1);
         assertThat(labelRepository.findById(label.getId())).isEmpty();
+    }
+
+    @Test
+    public void testDestroyButLabelIsUsing() throws Exception {
+        var task = testUtils.generateTask();
+        taskRepository.save(task);
+
+        var label = testUtils.generateLabel();
+        labelRepository.save(label);
+
+        task.addLabel(label);
+        taskRepository.save(task);
+        labelRepository.save(label);
+
+        mockMvc.perform(delete("/api/labels/" + label.getId()).with(token))
+                .andExpect(status().isMethodNotAllowed());
     }
 }
