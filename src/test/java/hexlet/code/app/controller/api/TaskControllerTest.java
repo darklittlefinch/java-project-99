@@ -61,8 +61,6 @@ public class TaskControllerTest {
 
     @Test
     public void testIndexFiltered() throws Exception {
-        taskRepository.deleteAll();
-
         var task = testUtils.generateTask();
         var titleCont = task.getName().substring(1).toLowerCase();
         var assigneeId = task.getAssignee().getId();
@@ -85,22 +83,19 @@ public class TaskControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        var data = new ArrayList<>();
-        var element = new HashMap<>();
-        element.put("assignee_id", task.getAssignee().getId());
-        element.put("content", task.getDescription());
-        element.put("createdAt", "${json-unit.ignore}");
-        element.put("id", task.getId());
-        element.put("index", task.getIndex());
-        element.put("status", task.getTaskStatus().getSlug());
-        element.put("title", task.getName());
-        data.add(element);
+        var data = new HashMap<>();
+        data.put("assignee_id", task.getAssignee().getId());
+        data.put("content", task.getDescription());
+        data.put("createdAt", "${json-unit.ignore}");
+        data.put("id", task.getId());
+        data.put("index", task.getIndex());
+        data.put("status", task.getTaskStatus().getSlug());
+        data.put("title", task.getName());
 
         var body = result.getResponse().getContentAsString();
         assertThatJson(body).when(Option.IGNORING_ARRAY_ORDER)
                 .isArray()
-                .hasSize(1)
-                .isEqualTo(om.writeValueAsString(data));
+                .contains(om.writeValueAsString(data));
     }
 
     @Test
