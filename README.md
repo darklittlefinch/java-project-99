@@ -8,4 +8,4 @@
 
 Task Manager is a system for task managing like [Redmine](http://www.redmine.org). You can create tasks, set assigners and change its statuses. Registration and authentication are required.
 
-[Click here](https://darklittlefinch-task-manager.onrender.com) to try it!
+[Click here](https://darklittlefinch-task-manager-v2.onrender.com/) to try it, or [here](http://localhost:8080/swagger-ui/index.html) if you want to explore an interactive documentation.
