@@ -10,8 +10,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hexlet.code.app.mapper.TaskMapper;
 import hexlet.code.app.util.TestUtils;
 import hexlet.code.app.util.UserUtils;
+import net.javacrumbs.jsonunit.core.Option;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequ
 import org.springframework.test.web.servlet.MockMvc;
 import hexlet.code.app.repository.TaskRepository;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 @SpringBootTest
@@ -33,6 +36,9 @@ public class TaskControllerTest {
 
     @Autowired
     private TaskRepository taskRepository;
+
+    @Autowired
+    private TaskMapper taskMapper;
 
     @Autowired
     private ObjectMapper om;
@@ -51,6 +57,50 @@ public class TaskControllerTest {
     public void testIndex() throws Exception {
         mockMvc.perform(get("/api/tasks").with(token))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testIndexFiltered() throws Exception {
+        taskRepository.deleteAll();
+
+        var task = testUtils.generateTask();
+        var titleCont = task.getName().substring(1).toLowerCase();
+        var assigneeId = task.getAssignee().getId();
+        var status = task.getTaskStatus().getSlug();
+        var labelId = task.getLabels().get(0).getId();
+        taskRepository.save(task);
+
+        var taskWrong = testUtils.generateTask();
+        taskRepository.save(taskWrong);
+
+        var request = get("/api/tasks"
+                + "?"
+                + "titleCont=" + titleCont
+                + "&assigneeId=" + assigneeId
+                + "&status=" + status
+                + "&labelId=" + labelId)
+                .with(token);
+
+        var result = mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andReturn();
+
+        var data = new ArrayList<>();
+        var element = new HashMap<>();
+        element.put("assignee_id", task.getAssignee().getId());
+        element.put("content", task.getDescription());
+        element.put("createdAt", "${json-unit.ignore}");
+        element.put("id", task.getId());
+        element.put("index", task.getIndex());
+        element.put("status", task.getTaskStatus().getSlug());
+        element.put("title", task.getName());
+        data.add(element);
+
+        var body = result.getResponse().getContentAsString();
+        assertThatJson(body).when(Option.IGNORING_ARRAY_ORDER)
+                .isArray()
+                .hasSize(1)
+                .isEqualTo(om.writeValueAsString(data));
     }
 
     @Test
