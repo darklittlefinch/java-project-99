@@ -24,7 +24,6 @@ import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequ
 import org.springframework.test.web.servlet.MockMvc;
 import hexlet.code.app.repository.TaskRepository;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 @SpringBootTest
