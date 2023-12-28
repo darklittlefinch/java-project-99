@@ -9,6 +9,7 @@ plugins {
 	id("se.patrikerdes.use-latest-versions") version "0.2.18"
 	id("com.github.ben-manes.versions") version "0.47.0"
 	id("com.adarshr.test-logger") version "4.0.0"
+	id("io.sentry.jvm.gradle") version "4.1.0"
 }
 
 group = "hexlet.code"
@@ -69,7 +70,6 @@ dependencies {
 	implementation("org.instancio:instancio-junit:3.3.0")
 
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
-	implementation("io.sentry:sentry-spring-boot-starter-jakarta:7.1.0")
 }
 
 tasks.withType<Test> {
@@ -91,4 +91,17 @@ tasks.jacocoTestReport {
 testlogger {
 	theme = ThemeType.MOCHA
 	showStandardStreams = true
+}
+
+sentry {
+	debug.set(true)
+	includeSourceContext.set(true)
+
+	org = "elisa-moritz"
+	projectName = "task-manager"
+	authToken.set(System.getenv("SENTRY_AUTH_TOKEN"))
+}
+
+tasks.sentryBundleSourcesJava {
+	enabled = System.getenv("SENTRY_AUTH_TOKEN") != null
 }
