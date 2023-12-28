@@ -14,7 +14,6 @@ import jakarta.validation.constraints.Email;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -31,20 +30,16 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
-@ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User implements BaseEntity, UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @ToString.Include
     @EqualsAndHashCode.Include
     private Long id;
 
-    @ToString.Include
     private String firstName;
 
-    @ToString.Include
     private String lastName;
 
     @Email
@@ -54,11 +49,9 @@ public class User implements BaseEntity, UserDetails {
     private String password;
 
     @CreatedDate
-    @ToString.Include
     private Instant createdAt;
 
     @LastModifiedDate
-    @ToString.Include
     private Instant updatedAt;
 
     @OneToMany(mappedBy = "assignee", cascade = CascadeType.MERGE, orphanRemoval = true)
