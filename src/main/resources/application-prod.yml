@@ -8,3 +8,6 @@ spring:
       enabled: false
     livereload:
       enabled: false
+sentry:
+  dsn: https://b5602824b1082ee05b0f4c7c45fae7cf@o4506474496983040.ingest.sentry.io/4506474877550592
+  traces-sample-rate: 1.0
