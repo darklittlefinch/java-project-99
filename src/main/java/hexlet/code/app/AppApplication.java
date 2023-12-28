@@ -12,14 +12,11 @@ import io.sentry.Sentry;
 public class AppApplication {
 
     public static void main(String[] args) {
-
         try {
-            throw new Exception("This is a test.");
+            SpringApplication.run(AppApplication.class, args);
         } catch (Exception e) {
             Sentry.captureException(e);
         }
-
-        SpringApplication.run(AppApplication.class, args);
     }
 
     @Bean
