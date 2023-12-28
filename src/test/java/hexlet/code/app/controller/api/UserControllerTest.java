@@ -24,6 +24,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 
 @SpringBootTest
@@ -140,8 +141,8 @@ public class UserControllerTest {
         assertThat(user.getFirstName()).isEqualTo("Elisa");
         assertThat(userRepository.findByEmail(oldEmail)).isEmpty();
 
-//        assertThat(user.getCreatedAt().toString()).isEqualTo(createdAt.toString());
-//        assertThat(user.getUpdatedAt().toString()).isNotEqualTo(updatedAt.toString());
+        assertThat(user.getCreatedAt().truncatedTo(ChronoUnit.SECONDS))
+                .isEqualTo(createdAt.truncatedTo(ChronoUnit.SECONDS));
 
         var userHashedPassword = userRepository.findByEmail(user.getEmail()).get().getPassword();
         assertThat(userPassword).isNotEqualTo(userHashedPassword);
