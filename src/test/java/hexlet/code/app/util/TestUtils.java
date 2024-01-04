@@ -5,6 +5,7 @@ import hexlet.code.app.model.TaskStatus;
 import hexlet.code.app.model.User;
 import hexlet.code.app.model.Task;
 import hexlet.code.app.repository.LabelRepository;
+import hexlet.code.app.repository.TaskRepository;
 import hexlet.code.app.repository.TaskStatusRepository;
 import hexlet.code.app.repository.UserRepository;
 import net.datafaker.Faker;
@@ -36,6 +37,9 @@ public class TestUtils {
 
     @Autowired
     private LabelRepository labelRepository;
+
+    @Autowired
+    private TaskRepository taskRepository;
 
     @Bean
     public User generateUser() {
@@ -77,7 +81,7 @@ public class TestUtils {
                 .ignore(Select.field(Task::getAssignee))
                 .ignore(Select.field(Task::getTaskStatus))
                 .supply(Select.field(Task::getName), () -> faker.lorem().word())
-                .supply(Select.field(Task::getIndex), () -> faker.number().randomNumber())
+                .supply(Select.field(Task::getIndex), this::generateRandomUniqueTaskIndex)
                 .supply(Select.field(Task::getDescription), () -> faker.lorem().sentence())
                 .supply(Select.field(Task::getLabels), () -> new ArrayList<Label>())
                 .create();
@@ -99,11 +103,10 @@ public class TestUtils {
 
     @Bean
     public Label generateLabel() {
-        var name = getRandomUniqueLabelName();
         return Instancio.of(Label.class)
                 .ignore(Select.field(Label::getId))
                 .ignore(Select.field(Label::getCreatedAt))
-                .supply(Select.field(Label::getName), () -> name)
+                .supply(Select.field(Label::getName), this::getRandomUniqueLabelName)
                 .supply(Select.field(Label::getTasks), () -> new ArrayList<Task>())
                 .create();
     }
@@ -114,5 +117,13 @@ public class TestUtils {
             name = faker.lorem().word().toLowerCase();
         } while (labelRepository.findByName(name).isPresent());
         return name;
+    }
+
+    private Long generateRandomUniqueTaskIndex() {
+        Long index;
+        do {
+            index = faker.number().randomNumber();
+        } while (taskRepository.findByIndex(index).isPresent());
+        return index;
     }
 }
