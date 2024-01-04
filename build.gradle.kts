@@ -93,13 +93,13 @@ testlogger {
 	showStandardStreams = true
 }
 
-sentry {
-	debug.set(true)
-	includeSourceContext.set(true)
-
-	org = "elisa-moritz"
-	projectName = "task-manager"
-	authToken.set(System.getenv("SENTRY_AUTH_TOKEN"))
+if (System.getenv("APP_ENV") == "prod") {
+	sentry {
+		includeSourceContext.set(true)
+		org = "elisa-moritz"
+		projectName = "task-manager"
+		authToken.set(System.getenv("SENTRY_AUTH_TOKEN"))
+	}
 }
 
 tasks.sentryBundleSourcesJava {
