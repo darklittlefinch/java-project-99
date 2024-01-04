@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import hexlet.code.app.repository.TaskRepository;
 
 import java.util.HashMap;
+import java.util.List;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -90,6 +91,7 @@ public class TaskControllerTest {
         data.put("index", task.getIndex());
         data.put("status", task.getTaskStatus().getSlug());
         data.put("title", task.getName());
+        data.put("taskLabelIds", List.of(labelId));
 
         var body = result.getResponse().getContentAsString();
         assertThatJson(body).when(Option.IGNORING_ARRAY_ORDER)
@@ -127,7 +129,7 @@ public class TaskControllerTest {
         data.put("title", task.getName());
         data.put("index", task.getIndex());
         data.put("content", task.getDescription());
-        data.put("assigneeId", task.getAssignee().getId());
+        data.put("assignee_id", task.getAssignee().getId());
         data.put("status", task.getTaskStatus().getSlug());
 
         var request = post("/api/tasks")
