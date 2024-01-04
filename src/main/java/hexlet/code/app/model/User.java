@@ -1,5 +1,6 @@
 package hexlet.code.app.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,7 +21,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -49,10 +50,12 @@ public class User implements BaseEntity, UserDetails {
     private String password;
 
     @CreatedDate
-    private Instant createdAt;
+    @JsonFormat(pattern = "dd/MM/yyyy, HH:mm:ss")
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
-    private Instant updatedAt;
+    @JsonFormat(pattern = "dd/MM/yyyy, HH:mm:ss")
+    private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "assignee", cascade = CascadeType.MERGE, orphanRemoval = true)
     private List<Task> tasks = new ArrayList<>();

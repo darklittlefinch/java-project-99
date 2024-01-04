@@ -1,5 +1,6 @@
 package hexlet.code.app.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,7 +17,7 @@ import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +43,8 @@ public class TaskStatus implements BaseEntity {
     private String slug;
 
     @CreatedDate
-    private Instant createdAt;
+    @JsonFormat(pattern = "dd/MM/yyyy, HH:mm:ss")
+    private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "taskStatus", cascade = CascadeType.MERGE, orphanRemoval = true)
     private List<Task> tasks = new ArrayList<>();
