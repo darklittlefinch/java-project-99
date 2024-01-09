@@ -38,6 +38,6 @@ public class Label implements BaseEntity {
     @CreatedDate
     private LocalDateTime createdAt;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "labels")
     private List<Task> tasks;
 }
