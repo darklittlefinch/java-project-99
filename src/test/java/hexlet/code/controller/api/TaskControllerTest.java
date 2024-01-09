@@ -66,7 +66,7 @@ public class TaskControllerTest {
         var assigneeId = task.getAssignee().getId();
         var status = task.getTaskStatus().getSlug();
         var labelId = task.getLabels().iterator().next().getId();
-        
+
         taskRepository.save(task);
 
         var taskWrong = testUtils.generateTask();
@@ -153,7 +153,7 @@ public class TaskControllerTest {
                 json -> json.node("createdAt").isPresent()
         );
 
-        assertThat(taskRepository.findByIndex(task.getIndex())).isPresent();
+        assertThat(taskRepository.findByName(task.getName())).isPresent();
         assertThat(taskRepository.count()).isEqualTo(tasksCount + 1);
     }
 

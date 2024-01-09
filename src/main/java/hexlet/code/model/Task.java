@@ -37,9 +37,9 @@ public class Task implements BaseEntity {
     private Long id;
 
     @NotBlank
+    @Column(unique = true)
     private String name;
 
-    @Column(unique = true)
     private Long index;
 
     private String description;
