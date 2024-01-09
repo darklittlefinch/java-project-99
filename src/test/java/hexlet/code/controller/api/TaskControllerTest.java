@@ -65,7 +65,8 @@ public class TaskControllerTest {
         var titleCont = task.getName().substring(1).toLowerCase();
         var assigneeId = task.getAssignee().getId();
         var status = task.getTaskStatus().getSlug();
-        var labelId = task.getLabels().get(0).getId();
+        var labelId = task.getLabels().iterator().next().getId();
+        
         taskRepository.save(task);
 
         var taskWrong = testUtils.generateTask();

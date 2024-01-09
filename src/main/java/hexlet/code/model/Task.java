@@ -20,7 +20,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "tasks")
@@ -54,7 +55,7 @@ public class Task implements BaseEntity {
     private LocalDateTime createdAt;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-    private List<Label> labels;
+    private Set<Label> labels = new HashSet<>();
 
     public void addLabel(Label label) {
         labels.add(label);

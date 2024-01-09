@@ -18,6 +18,7 @@ import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Set;
 
 @Mapper(
         uses = {JsonNullableMapper.class, ReferenceMapper.class},
@@ -68,7 +69,7 @@ public abstract class TaskMapper {
                 .toList();
     }
 
-    public List<Long> toIds(List<Label> labels) {
+    public List<Long> toIds(Set<Label> labels) {
         return labels == null
                 ? null
                 : labels.stream()

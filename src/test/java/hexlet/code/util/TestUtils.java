@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 @Component
 public class TestUtils {
@@ -83,7 +84,7 @@ public class TestUtils {
                 .supply(Select.field(Task::getName), () -> faker.lorem().word())
                 .supply(Select.field(Task::getIndex), this::generateRandomUniqueTaskIndex)
                 .supply(Select.field(Task::getDescription), () -> faker.lorem().sentence())
-                .supply(Select.field(Task::getLabels), () -> new ArrayList<Label>())
+                .supply(Select.field(Task::getLabels), () -> new HashSet<Label>())
                 .create();
 
         var assignee = generateUser();
