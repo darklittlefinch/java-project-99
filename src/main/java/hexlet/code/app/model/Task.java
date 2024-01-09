@@ -1,6 +1,5 @@
 package hexlet.code.app.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -52,7 +51,6 @@ public class Task implements BaseEntity {
     private User assignee;
 
     @CreatedDate
-    @JsonFormat(pattern = "dd/MM/yyyy, HH:mm:ss")
     private LocalDateTime createdAt;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)

@@ -14,6 +14,6 @@ public class UserDTO {
     private String lastName;
     private String email;
 
-    @JsonFormat(pattern = "dd/MM/yyyy, HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
 }
