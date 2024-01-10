@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.util.TestUtils;
 import hexlet.code.util.UserUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,12 @@ public class TaskStatusControllerTest {
     @BeforeEach
     public void setUp() {
         token = jwt().jwt(builder -> builder.subject(UserUtils.ADMIN_EMAIL));
+    }
+
+    @AfterEach
+    public void clean() {
+        taskRepository.deleteAll();
+        taskStatusRepository.deleteAll();
     }
 
     @Test

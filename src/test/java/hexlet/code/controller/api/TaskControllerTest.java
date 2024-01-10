@@ -14,6 +14,7 @@ import hexlet.code.mapper.TaskMapper;
 import hexlet.code.util.TestUtils;
 import hexlet.code.util.UserUtils;
 import net.javacrumbs.jsonunit.core.Option;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,11 @@ public class TaskControllerTest {
     @BeforeEach
     public void setUp() {
         token = jwt().jwt(builder -> builder.subject(UserUtils.ADMIN_EMAIL));
+    }
+
+    @AfterEach
+    public void clean() {
+        taskRepository.deleteAll();
     }
 
     @Test

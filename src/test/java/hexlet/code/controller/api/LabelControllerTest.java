@@ -15,6 +15,7 @@ import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.util.TestUtils;
 import hexlet.code.util.UserUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,12 @@ public class LabelControllerTest {
     @BeforeEach
     public void setUp() {
         token = jwt().jwt(builder -> builder.subject(UserUtils.ADMIN_EMAIL));
+    }
+
+    @AfterEach
+    public void clean() {
+        taskRepository.deleteAll();
+        labelRepository.deleteAll();
     }
 
     @Test

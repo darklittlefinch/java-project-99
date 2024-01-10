@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.util.UserUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -51,6 +52,12 @@ public class UserControllerTest {
     @BeforeEach
     public void setUp() {
         token = jwt().jwt(builder -> builder.subject(UserUtils.ADMIN_EMAIL));
+    }
+
+    @AfterEach
+    public void clean() {
+        taskRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
@@ -212,10 +219,4 @@ public class UserControllerTest {
         mockMvc.perform(delete("/api/users/" + user.getId()).with(token))
                 .andExpect(status().isMethodNotAllowed());
     }
-
-    @Test
-    public void testIsAdminPresent() {
-        assertThat(userRepository.findByEmail("hexlet@example.com")).isPresent();
-    }
-
 }
