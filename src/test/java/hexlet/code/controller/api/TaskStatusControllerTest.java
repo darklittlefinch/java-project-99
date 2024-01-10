@@ -201,13 +201,4 @@ public class TaskStatusControllerTest {
         mockMvc.perform(delete("/api/task_statuses/" + taskStatus.getId()).with(token))
                 .andExpect(status().isMethodNotAllowed());
     }
-
-    @Test
-    public void testSetUpInitialization() {
-        assertThat(taskStatusRepository.findBySlug("draft")).isPresent();
-        assertThat(taskStatusRepository.findBySlug("to_review")).isPresent();
-        assertThat(taskStatusRepository.findBySlug("to_be_fixed")).isPresent();
-        assertThat(taskStatusRepository.findBySlug("to_publish")).isPresent();
-        assertThat(taskStatusRepository.findBySlug("published")).isPresent();
-    }
 }

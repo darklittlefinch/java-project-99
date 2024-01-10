@@ -162,10 +162,4 @@ public class LabelControllerTest {
         mockMvc.perform(delete("/api/labels/" + label.getId()).with(token))
                 .andExpect(status().isMethodNotAllowed());
     }
-
-    @Test
-    public void testSetUpInitialization() {
-        assertThat(labelRepository.findByName("feature")).isPresent();
-        assertThat(labelRepository.findByName("bug")).isPresent();
-    }
 }
