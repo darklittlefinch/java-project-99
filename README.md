@@ -9,3 +9,29 @@
 Task Manager is a system for task managing like [Redmine](http://www.redmine.org). You can create tasks, set assigners and change its statuses. Registration and authentication are required.
 
 [Click here](https://darklittlefinch-task-manager-v2.onrender.com/) to try it, or [here](https://darklittlefinch-task-manager-v2.onrender.com/swagger-ui/index.html) if you want to explore an interactive documentation.
+
+## Local start
+
+If you want to start this project locally, enter this command:
+
+```bash
+make start
+```
+
+Then open http://localhost:8080 on your browser and enter admin details:
+
+```
+Username: hexlet@example.com
+Password: qwerty
+```
+
+## Stack
+
+* Java
+* Spring Boot
+* Spring Boot Security
+* Databases: PostgreSQL, H2
+* MapStruct
+* JUnit5
+* GNU Make
+* PaaS Render
