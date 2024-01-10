@@ -46,9 +46,4 @@ public class TaskStatus implements BaseEntity {
 
     @OneToMany(mappedBy = "taskStatus", cascade = CascadeType.MERGE, orphanRemoval = true)
     private List<Task> tasks = new ArrayList<>();
-
-    public void addTask(Task task) {
-        tasks.add(task);
-        task.setTaskStatus(this);
-    }
 }

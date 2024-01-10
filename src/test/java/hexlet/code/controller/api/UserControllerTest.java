@@ -209,7 +209,9 @@ public class UserControllerTest {
     public void testDestroyButUserHasTasks() throws Exception {
         var user = testUtils.generateUser();
         var task = testUtils.generateTask();
-        user.addTask(task);
+
+        user.getTasks().add(task);
+        task.setAssignee(user);
 
         userRepository.save(user);
         taskRepository.save(task);

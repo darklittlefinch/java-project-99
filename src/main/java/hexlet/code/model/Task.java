@@ -56,14 +56,4 @@ public class Task implements BaseEntity {
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private Set<Label> labels = new HashSet<>();
-
-    public void addLabel(Label label) {
-        labels.add(label);
-        label.getTasks().add(this);
-    }
-
-    public void removeLabel(Label label) {
-        labels.remove(label);
-        label.getTasks().remove(this);
-    }
 }

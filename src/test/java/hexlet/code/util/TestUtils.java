@@ -89,7 +89,8 @@ public class TestUtils {
 
         var label = generateLabel();
         labelRepository.save(label);
-        task.addLabel(label);
+        task.getLabels().add(label);
+        label.getTasks().add(task);
 
         return task;
     }

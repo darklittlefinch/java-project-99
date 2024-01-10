@@ -155,7 +155,9 @@ public class LabelControllerTest {
         var label = testUtils.generateLabel();
         labelRepository.save(label);
 
-        task.addLabel(label);
+        task.getLabels().add(label);
+        label.getTasks().add(task);
+
         taskRepository.save(task);
         labelRepository.save(label);
 

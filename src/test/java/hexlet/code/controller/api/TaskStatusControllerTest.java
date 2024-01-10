@@ -197,7 +197,9 @@ public class TaskStatusControllerTest {
     public void testDestroyButStatusIsUsing() throws Exception {
         var taskStatus = testUtils.generateTaskStatus();
         var task = testUtils.generateTask();
-        taskStatus.addTask(task);
+
+        taskStatus.getTasks().add(task);
+        task.setTaskStatus(taskStatus);
 
         taskStatusRepository.save(taskStatus);
         taskRepository.save(task);
