@@ -111,10 +111,10 @@ public class LabelControllerTest {
         var label = testUtils.generateLabel();
         labelRepository.save(label);
 
-        var labelsCount = labelRepository.count();
+        var newName = "New name";
 
         var data = new HashMap<>();
-        data.put("name", "New name");
+        data.put("name", newName);
 
         var request = put("/api/labels/" + label.getId())
                 .with(token)
@@ -127,10 +127,11 @@ public class LabelControllerTest {
 
         var body = result.getResponse().getContentAsString();
         assertThatJson(body).isNotNull().and(
-                json -> json.node("name").isEqualTo("New name")
+                json -> json.node("name").isEqualTo(newName)
         );
 
-        assertThat(labelRepository.count()).isEqualTo(labelsCount);
+        label = labelRepository.findById(label.getId()).get();
+        assertThat(label.getName()).isEqualTo(newName);
     }
 
     @Test
