@@ -123,7 +123,6 @@ public class UserControllerTest {
         userRepository.save(user);
 
         var createdAt = user.getCreatedAt();
-        var updatedAt = user.getUpdatedAt();
         var oldEmail = user.getEmail();
         var usersCount = userRepository.count();
 
