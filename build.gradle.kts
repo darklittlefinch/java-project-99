@@ -98,7 +98,7 @@ sentry {
 	includeSourceContext.set(true)
 	org.set("elisa-moritz")
 	projectName.set("task-manager")
-	authToken.set(${{secrets.SENTRY_AUTH_TOKEN}})
+	authToken.set(System.getenv("SENTRY_AUTH_TOKEN"))
 }
 
 
