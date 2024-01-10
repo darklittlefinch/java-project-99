@@ -57,12 +57,12 @@ public class TestUtils {
 
     @Bean
     public TaskStatus generateTaskStatus() {
-        var slug = getRandomUniqueTaskStatusSlug();
+        var slugAndName = getRandomUniqueTaskStatusSlugAndName();
         return Instancio.of(TaskStatus.class)
                 .ignore(Select.field(TaskStatus::getId))
                 .ignore(Select.field(TaskStatus::getCreatedAt))
-                .supply(Select.field(TaskStatus::getSlug), () -> slug)
-                .supply(Select.field(TaskStatus::getName), () -> slug)
+                .supply(Select.field(TaskStatus::getSlug), () -> slugAndName)
+                .supply(Select.field(TaskStatus::getName), () -> slugAndName)
                 .create();
     }
 
@@ -112,12 +112,13 @@ public class TestUtils {
         return name;
     }
 
-    private String getRandomUniqueTaskStatusSlug() {
-        var slug = "";
+    private String getRandomUniqueTaskStatusSlugAndName() {
+        var slugAndName = "";
         do {
-            slug = faker.lorem().word().toLowerCase();
-        } while (taskStatusRepository.findBySlug(slug).isPresent());
-        return slug;
+            slugAndName = faker.lorem().word().toLowerCase();
+        } while (taskStatusRepository.findBySlug(slugAndName).isPresent()
+                || taskStatusRepository.findByName(slugAndName).isPresent());
+        return slugAndName;
     }
 
     private String getRandomUniqueLabelName() {
