@@ -1,6 +1,5 @@
 package hexlet.code.dto.labelDto;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,6 +8,5 @@ import lombok.Setter;
 @Setter
 public class LabelCreateDTO {
     @NotBlank
-    @Column(unique = true)
     private String name;
 }
