@@ -5,7 +5,7 @@ import hexlet.code.dto.userDto.UserDTO;
 import hexlet.code.dto.userDto.UserUpdateDTO;
 import hexlet.code.service.UserService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,13 +23,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
+@AllArgsConstructor
 public class UserController {
 
     private static final String ONLY_OWNER_BY_ID
             = "@userRepository.findById(#id).get().getEmail() == authentication.getName()";
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @GetMapping(path = "")
     @ResponseStatus(HttpStatus.OK)
