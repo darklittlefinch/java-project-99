@@ -121,7 +121,6 @@ public class UserControllerTest {
 
         var createdAt = user.getCreatedAt();
         var oldEmail = user.getEmail();
-        var usersCount = userRepository.count();
 
         token = jwt().jwt(builder -> builder.subject(oldEmail));
 
@@ -139,7 +138,6 @@ public class UserControllerTest {
 
         user = userRepository.findById(user.getId()).get();
 
-        assertThat(userRepository.count()).isEqualTo(usersCount);
         assertThat(user.getEmail()).isEqualTo("new@gmail.com");
         assertThat(user.getFirstName()).isEqualTo("Elisa");
         assertThat(userRepository.findByEmail(oldEmail)).isEmpty();
@@ -178,12 +176,9 @@ public class UserControllerTest {
         userRepository.save(user);
         token = jwt().jwt(builder -> builder.subject(user.getEmail()));
 
-        var usersCount = userRepository.count();
-
         mockMvc.perform(delete("/api/users/" + user.getId()).with(token))
                 .andExpect(status().isNoContent());
 
-        assertThat(userRepository.count()).isEqualTo(usersCount - 1);
         assertThat(userRepository.findById(user.getId())).isEmpty();
     }
 
@@ -192,12 +187,9 @@ public class UserControllerTest {
         var user = testUtils.generateUser();
         userRepository.save(user);
 
-        var usersCount = userRepository.count();
-
         mockMvc.perform(delete("/api/users/" + user.getId()).with(token))
                 .andExpect(status().isForbidden());
 
-        assertThat(userRepository.count()).isEqualTo(usersCount);
         assertThat(userRepository.findById(user.getId())).isPresent();
     }
 

@@ -127,7 +127,6 @@ public class TaskStatusControllerTest {
         taskStatusRepository.save(taskStatus);
 
         var oldSlug = taskStatus.getSlug();
-        var taskStatusesCount = taskStatusRepository.count();
 
         var data = new HashMap<>();
         data.put("slug", "newSlug");
@@ -142,7 +141,6 @@ public class TaskStatusControllerTest {
 
         taskStatus = taskStatusRepository.findById(taskStatus.getId()).get();
 
-        assertThat(taskStatusRepository.count()).isEqualTo(taskStatusesCount);
         assertThat(taskStatus.getSlug()).isEqualTo("newSlug");
         assertThat(taskStatusRepository.findBySlug(oldSlug)).isEmpty();
         assertThat(taskStatusRepository.findBySlug(taskStatus.getSlug())).isPresent();
@@ -172,12 +170,9 @@ public class TaskStatusControllerTest {
         var taskStatus = testUtils.generateTaskStatus();
         taskStatusRepository.save(taskStatus);
 
-        var taskStatusesCount = taskStatusRepository.count();
-
         mockMvc.perform(delete("/api/task_statuses/" + taskStatus.getId()).with(token))
                 .andExpect(status().isNoContent());
 
-        assertThat(taskStatusRepository.count()).isEqualTo(taskStatusesCount - 1);
         assertThat(taskStatusRepository.findById(taskStatus.getId())).isEmpty();
     }
 

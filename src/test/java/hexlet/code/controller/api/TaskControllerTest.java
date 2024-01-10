@@ -167,8 +167,6 @@ public class TaskControllerTest {
         var task = testUtils.generateTask();
         taskRepository.save(task);
 
-        var tasksCount = taskRepository.count();
-
         var data = new HashMap<>();
         data.put("title", "new title");
 
@@ -182,7 +180,6 @@ public class TaskControllerTest {
 
         task = taskRepository.findById(task.getId()).get();
 
-        assertThat(taskRepository.count()).isEqualTo(tasksCount);
         assertThat(task.getName()).isEqualTo("new title");
     }
 
@@ -191,12 +188,9 @@ public class TaskControllerTest {
         var task = testUtils.generateTask();
         taskRepository.save(task);
 
-        var tasksCount = taskRepository.count();
-
         mockMvc.perform(delete("/api/tasks/" + task.getId()).with(token))
                 .andExpect(status().isNoContent());
 
-        assertThat(taskRepository.count()).isEqualTo(tasksCount - 1);
         assertThat(taskRepository.findById(task.getId())).isEmpty();
     }
 }

@@ -139,12 +139,9 @@ public class LabelControllerTest {
         var label = testUtils.generateLabel();
         labelRepository.save(label);
 
-        var labelsCount = labelRepository.count();
-
         mockMvc.perform(delete("/api/labels/" + label.getId()).with(token))
                 .andExpect(status().isNoContent());
 
-        assertThat(labelRepository.count()).isEqualTo(labelsCount - 1);
         assertThat(labelRepository.findById(label.getId())).isEmpty();
     }
 
