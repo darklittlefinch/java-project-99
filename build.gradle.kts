@@ -96,8 +96,8 @@ testlogger {
 if (System.getenv("APP_ENV") == "prod") {
 	sentry {
 		includeSourceContext.set(true)
-		org = "elisa-moritz"
-		projectName = "task-manager"
+		org.set("elisa-moritz")
+		projectName.set("task-manager")
 		authToken.set(System.getenv("SENTRY_AUTH_TOKEN"))
 	}
 }
