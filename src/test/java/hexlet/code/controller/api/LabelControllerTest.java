@@ -84,7 +84,6 @@ public class LabelControllerTest {
 
     @Test
     public void testCreate() throws Exception {
-        var labelsCount = labelRepository.count();
         var label = testUtils.generateLabel();
 
         var request = post("/api/labels")
@@ -103,7 +102,8 @@ public class LabelControllerTest {
                 json -> json.node("createdAt").isPresent()
         );
 
-        assertThat(labelRepository.count()).isEqualTo(labelsCount + 1);
+        var id = om.readTree(body).get("id").asLong();
+        assertThat(labelRepository.findById(id)).isPresent();
     }
 
     @Test

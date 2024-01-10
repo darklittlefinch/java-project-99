@@ -84,7 +84,6 @@ public class TaskStatusControllerTest {
 
     @Test
     public void testCreate() throws Exception {
-        var taskStatusesCount = taskStatusRepository.count();
         var taskStatus = testUtils.generateTaskStatus();
 
         var request = post("/api/task_statuses")
@@ -104,8 +103,8 @@ public class TaskStatusControllerTest {
                 json -> json.node("createdAt").isPresent()
         );
 
-        assertThat(taskStatusRepository.findBySlug(taskStatus.getSlug())).isPresent();
-        assertThat(taskStatusRepository.count()).isEqualTo(taskStatusesCount + 1);
+        var id = om.readTree(body).get("id").asLong();
+        assertThat(taskStatusRepository.findById(id)).isPresent();
     }
 
     @Test

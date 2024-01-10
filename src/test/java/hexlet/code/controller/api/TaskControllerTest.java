@@ -129,7 +129,6 @@ public class TaskControllerTest {
 
     @Test
     public void testCreate() throws Exception {
-        var tasksCount = taskRepository.count();
         var task = testUtils.generateTask();
 
         var data = new HashMap<>();
@@ -159,8 +158,8 @@ public class TaskControllerTest {
                 json -> json.node("createdAt").isPresent()
         );
 
-        assertThat(taskRepository.findByName(task.getName())).isPresent();
-        assertThat(taskRepository.count()).isEqualTo(tasksCount + 1);
+        var id = om.readTree(body).get("id").asLong();
+        assertThat(taskRepository.findById(id)).isPresent();
     }
 
     @Test

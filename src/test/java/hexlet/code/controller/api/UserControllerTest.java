@@ -87,8 +87,6 @@ public class UserControllerTest {
 
     @Test
     public void testCreate() throws Exception {
-        var usersCount = userRepository.count();
-
         var user = testUtils.generateUser();
         var userPassword = user.getPassword();
 
@@ -101,8 +99,6 @@ public class UserControllerTest {
                 .andExpect(status().isCreated())
                 .andReturn();
 
-        assertThat(userRepository.count()).isEqualTo(usersCount + 1);
-
         var body = result.getResponse().getContentAsString();
         assertThatJson(body).and(
                 json -> json.node("firstName").isEqualTo(user.getFirstName()),
@@ -110,7 +106,8 @@ public class UserControllerTest {
                 json -> json.node("email").isEqualTo(user.getEmail())
         );
 
-        assertThat(userRepository.findByEmail(user.getEmail())).isPresent();
+        var id = om.readTree(body).get("id").asLong();
+        assertThat(userRepository.findById(id)).isPresent();
 
         var userHashedPassword = userRepository.findByEmail(user.getEmail()).get().getPassword();
         assertThat(userPassword).isNotEqualTo(userHashedPassword);
