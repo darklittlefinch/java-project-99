@@ -121,12 +121,14 @@ public class UserControllerTest {
 
         var createdAt = user.getCreatedAt();
         var oldEmail = user.getEmail();
+        var newEmail = "new@gmail.com";
+        var newName = "Elisa";
 
         token = jwt().jwt(builder -> builder.subject(oldEmail));
 
         var data = new HashMap<>();
-        data.put("email", "new@gmail.com");
-        data.put("firstName", "Elisa");
+        data.put("email", newEmail);
+        data.put("firstName", newName);
 
         var request = put("/api/users/" + user.getId())
                 .with(token)
@@ -138,8 +140,8 @@ public class UserControllerTest {
 
         user = userRepository.findById(user.getId()).get();
 
-        assertThat(user.getEmail()).isEqualTo("new@gmail.com");
-        assertThat(user.getFirstName()).isEqualTo("Elisa");
+        assertThat(user.getEmail()).isEqualTo(newEmail);
+        assertThat(user.getFirstName()).isEqualTo(newName);
         assertThat(userRepository.findByEmail(oldEmail)).isEmpty();
 
         assertThat(user.getCreatedAt().truncatedTo(ChronoUnit.SECONDS))
@@ -153,10 +155,12 @@ public class UserControllerTest {
     public void testUpdateWrongUser() throws Exception {
         var user = testUtils.generateUser();
         userRepository.save(user);
+
         var oldEmail = user.getEmail();
+        var newEmail = "new@gmail.com";
 
         var data = new HashMap<>();
-        data.put("email", "new@gmail.com");
+        data.put("email", newEmail);
 
         var request = put("/api/users/" + user.getId())
                 .with(token)
@@ -167,7 +171,7 @@ public class UserControllerTest {
                 .andExpect(status().isForbidden());
 
         assertThat(userRepository.findByEmail(oldEmail)).isPresent();
-        assertThat(userRepository.findByEmail("new@gmail.com")).isEmpty();
+        assertThat(userRepository.findByEmail(newEmail)).isEmpty();
     }
 
     @Test

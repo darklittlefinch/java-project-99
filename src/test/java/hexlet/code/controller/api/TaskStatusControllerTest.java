@@ -127,9 +127,10 @@ public class TaskStatusControllerTest {
         taskStatusRepository.save(taskStatus);
 
         var oldSlug = taskStatus.getSlug();
+        var newSlug = "newSlug";
 
         var data = new HashMap<>();
-        data.put("slug", "newSlug");
+        data.put("slug", newSlug);
 
         var request = put("/api/task_statuses/" + taskStatus.getId())
                 .with(token)
@@ -141,7 +142,7 @@ public class TaskStatusControllerTest {
 
         taskStatus = taskStatusRepository.findById(taskStatus.getId()).get();
 
-        assertThat(taskStatus.getSlug()).isEqualTo("newSlug");
+        assertThat(taskStatus.getSlug()).isEqualTo(newSlug);
         assertThat(taskStatusRepository.findBySlug(oldSlug)).isEmpty();
         assertThat(taskStatusRepository.findBySlug(taskStatus.getSlug())).isPresent();
     }
@@ -151,8 +152,10 @@ public class TaskStatusControllerTest {
         var taskStatus = testUtils.generateTaskStatus();
         taskStatusRepository.save(taskStatus);
 
+        var newSlug = "newSlug";
+
         var data = new HashMap<>();
-        data.put("slug", "newSlug");
+        data.put("slug", newSlug);
 
         var request = put("/api/task_statuses/" + taskStatus.getId())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -162,7 +165,7 @@ public class TaskStatusControllerTest {
                 .andExpect(status().isUnauthorized());
 
         assertThat(taskStatusRepository.findBySlug(taskStatus.getSlug())).isPresent();
-        assertThat(taskStatusRepository.findBySlug("newSlug")).isEmpty();
+        assertThat(taskStatusRepository.findBySlug(newSlug)).isEmpty();
     }
 
     @Test

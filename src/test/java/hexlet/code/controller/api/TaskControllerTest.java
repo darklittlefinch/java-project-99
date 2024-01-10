@@ -167,8 +167,10 @@ public class TaskControllerTest {
         var task = testUtils.generateTask();
         taskRepository.save(task);
 
+        var newTitle = "new title";
+
         var data = new HashMap<>();
-        data.put("title", "new title");
+        data.put("title", newTitle);
 
         var request = put("/api/tasks/" + task.getId())
                 .with(token)
@@ -180,7 +182,7 @@ public class TaskControllerTest {
 
         task = taskRepository.findById(task.getId()).get();
 
-        assertThat(task.getName()).isEqualTo("new title");
+        assertThat(task.getName()).isEqualTo(newTitle);
     }
 
     @Test
