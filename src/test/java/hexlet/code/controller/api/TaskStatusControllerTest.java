@@ -54,8 +54,7 @@ public class TaskStatusControllerTest {
 
     @AfterEach
     public void clean() {
-        taskRepository.deleteAll();
-        taskStatusRepository.deleteAll();
+        testUtils.clean();
     }
 
     @Test

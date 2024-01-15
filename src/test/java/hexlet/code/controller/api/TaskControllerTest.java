@@ -11,6 +11,9 @@ import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.mapper.TaskMapper;
+import hexlet.code.repository.LabelRepository;
+import hexlet.code.repository.TaskStatusRepository;
+import hexlet.code.repository.UserRepository;
 import hexlet.code.util.TestUtils;
 import hexlet.code.util.UserUtils;
 import net.javacrumbs.jsonunit.core.Option;
@@ -56,7 +59,7 @@ public class TaskControllerTest {
 
     @AfterEach
     public void clean() {
-        taskRepository.deleteAll();
+        testUtils.clean();
     }
 
     @Test

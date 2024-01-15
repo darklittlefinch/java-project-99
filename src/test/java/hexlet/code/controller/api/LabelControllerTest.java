@@ -55,8 +55,7 @@ public class LabelControllerTest {
 
     @AfterEach
     public void clean() {
-        taskRepository.deleteAll();
-        labelRepository.deleteAll();
+        testUtils.clean();
     }
 
     @Test

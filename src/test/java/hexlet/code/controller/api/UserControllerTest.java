@@ -56,8 +56,7 @@ public class UserControllerTest {
 
     @AfterEach
     public void clean() {
-        taskRepository.deleteAll();
-        userRepository.deleteAll();
+        testUtils.clean();
     }
 
     @Test

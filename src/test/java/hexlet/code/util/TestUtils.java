@@ -105,6 +105,14 @@ public class TestUtils {
                 .create();
     }
 
+    @Bean
+    public void clean() {
+        taskRepository.deleteAll();
+        userRepository.deleteAll();
+        taskStatusRepository.deleteAll();
+        labelRepository.deleteAll();
+    }
+
     private String getRandomUniqueTaskName() {
         var name = "";
         do {
