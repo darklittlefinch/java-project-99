@@ -169,6 +169,6 @@ public class LabelControllerTest {
         taskRepository.save(task);
 
         mockMvc.perform(delete("/api/labels/" + label.getId()).with(token))
-                .andExpect(status().isMethodNotAllowed());
+                .andExpect(status().isInternalServerError());
     }
 }

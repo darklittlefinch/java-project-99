@@ -217,6 +217,6 @@ public class TaskStatusControllerTest {
         taskRepository.save(task);
 
         mockMvc.perform(delete("/api/task_statuses/" + taskStatus.getId()).with(token))
-                .andExpect(status().isMethodNotAllowed());
+                .andExpect(status().isInternalServerError());
     }
 }

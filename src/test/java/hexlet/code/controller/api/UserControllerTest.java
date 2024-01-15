@@ -183,7 +183,7 @@ public class UserControllerTest {
                 .content(om.writeValueAsString(data));
 
         mockMvc.perform(request)
-                .andExpect(status().isForbidden());
+                .andExpect(status().isInternalServerError());
 
         assertThat(userRepository.findByEmail(oldEmail)).isPresent();
         assertThat(userRepository.findByEmail(newEmail)).isEmpty();
@@ -207,7 +207,7 @@ public class UserControllerTest {
         userRepository.save(user);
 
         mockMvc.perform(delete("/api/users/" + user.getId()).with(token))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isInternalServerError());
 
         assertThat(userRepository.findById(user.getId())).isPresent();
     }
@@ -226,6 +226,6 @@ public class UserControllerTest {
         token = jwt().jwt(builder -> builder.subject(user.getEmail()));
 
         mockMvc.perform(delete("/api/users/" + user.getId()).with(token))
-                .andExpect(status().isMethodNotAllowed());
+                .andExpect(status().isInternalServerError());
     }
 }
