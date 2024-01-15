@@ -60,12 +60,22 @@ public class TestUtils {
 
     @Bean
     public TaskStatus generateTaskStatus() {
-        var slugAndName = getRandomUniqueTaskStatusSlugAndName();
+        var slugAndName = faker.lorem().word();
         return Instancio.of(TaskStatus.class)
                 .ignore(Select.field(TaskStatus::getId))
                 .ignore(Select.field(TaskStatus::getCreatedAt))
                 .supply(Select.field(TaskStatus::getSlug), () -> slugAndName)
                 .supply(Select.field(TaskStatus::getName), () -> slugAndName)
+                .create();
+    }
+
+    @Bean
+    public Label generateLabel() {
+        return Instancio.of(Label.class)
+                .ignore(Select.field(Label::getId))
+                .ignore(Select.field(Label::getCreatedAt))
+                .supply(Select.field(Label::getName), () -> faker.lorem().word())
+                .supply(Select.field(Label::getTasks), () -> new ArrayList<Task>())
                 .create();
     }
 
@@ -76,7 +86,7 @@ public class TestUtils {
                 .ignore(Select.field(Task::getCreatedAt))
                 .ignore(Select.field(Task::getAssignee))
                 .ignore(Select.field(Task::getTaskStatus))
-                .supply(Select.field(Task::getName), this::getRandomUniqueTaskName)
+                .supply(Select.field(Task::getName), () -> faker.lorem().word())
                 .supply(Select.field(Task::getIndex), () -> faker.number().randomNumber())
                 .supply(Select.field(Task::getDescription), () -> faker.lorem().sentence())
                 .supply(Select.field(Task::getLabels), () -> new HashSet<Label>())
@@ -99,45 +109,10 @@ public class TestUtils {
     }
 
     @Bean
-    public Label generateLabel() {
-        return Instancio.of(Label.class)
-                .ignore(Select.field(Label::getId))
-                .ignore(Select.field(Label::getCreatedAt))
-                .supply(Select.field(Label::getName), this::getRandomUniqueLabelName)
-                .supply(Select.field(Label::getTasks), () -> new ArrayList<Task>())
-                .create();
-    }
-
-    @Bean
     public void clean() {
         taskRepository.deleteAll();
         userRepository.deleteAll();
         taskStatusRepository.deleteAll();
         labelRepository.deleteAll();
-    }
-
-    private String getRandomUniqueTaskName() {
-        var name = "";
-        do {
-            name = faker.lorem().word().toLowerCase();
-        } while (taskRepository.findByName(name).isPresent());
-        return name;
-    }
-
-    private String getRandomUniqueTaskStatusSlugAndName() {
-        var slugAndName = "";
-        do {
-            slugAndName = faker.lorem().word().toLowerCase();
-        } while (taskStatusRepository.findBySlug(slugAndName).isPresent()
-                || taskStatusRepository.findByName(slugAndName).isPresent());
-        return slugAndName;
-    }
-
-    private String getRandomUniqueLabelName() {
-        var name = "";
-        do {
-            name = faker.lorem().word().toLowerCase();
-        } while (labelRepository.findByName(name).isPresent());
-        return name;
     }
 }

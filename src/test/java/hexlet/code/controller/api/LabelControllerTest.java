@@ -163,7 +163,6 @@ public class LabelControllerTest {
         taskRepository.save(task);
 
         var label = task.getLabels().iterator().next();
-        taskRepository.save(task);
 
         mockMvc.perform(delete("/api/labels/" + label.getId()).with(token))
                 .andExpect(status().isInternalServerError());

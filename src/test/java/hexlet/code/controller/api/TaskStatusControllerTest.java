@@ -210,14 +210,10 @@ public class TaskStatusControllerTest {
 
     @Test
     public void testDestroyButStatusIsUsing() throws Exception {
-        var taskStatus = testUtils.generateTaskStatus();
         var task = testUtils.generateTask();
-
-        taskStatus.getTasks().add(task);
-        task.setTaskStatus(taskStatus);
-
-        taskStatusRepository.save(taskStatus);
         taskRepository.save(task);
+
+        var taskStatus = task.getTaskStatus();
 
         mockMvc.perform(delete("/api/task_statuses/" + taskStatus.getId()).with(token))
                 .andExpect(status().isInternalServerError());

@@ -215,15 +215,10 @@ public class UserControllerTest {
 
     @Test
     public void testDestroyButUserHasTasks() throws Exception {
-        var user = testUtils.generateUser();
         var task = testUtils.generateTask();
-
-        user.getTasks().add(task);
-        task.setAssignee(user);
-
-        userRepository.save(user);
         taskRepository.save(task);
 
+        var user = task.getAssignee();
         token = jwt().jwt(builder -> builder.subject(user.getEmail()));
 
         mockMvc.perform(delete("/api/users/" + user.getId()).with(token))
