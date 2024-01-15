@@ -61,12 +61,7 @@ public abstract class TaskMapper {
     }
 
     public List<Label> toEntities(List<Long> labelIds) {
-        return labelIds == null
-                ? null
-                : labelIds.stream()
-                .map(labelId -> labelRepository.findById(labelId)
-                        .orElseThrow(() -> new ResourceNotFoundException("Label not found")))
-                .toList();
+        return labelRepository.findByIdIn(labelIds);
     }
 
     public List<Long> toIds(Set<Label> labels) {
