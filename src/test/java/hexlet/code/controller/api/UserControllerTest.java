@@ -27,7 +27,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 
@@ -64,11 +63,8 @@ public class UserControllerTest {
 
     @Test
     public void testIndex() throws Exception {
-        var user1 = testUtils.generateUser();
-        var user2 = testUtils.generateUser();
-
-        userRepository.save(user1);
-        userRepository.save(user2);
+        var user = testUtils.generateUser();
+        userRepository.save(user);
 
         var result = mockMvc.perform(get("/api/users").with(token))
                 .andExpect(status().isOk())
@@ -92,11 +88,11 @@ public class UserControllerTest {
 
         var body = result.getResponse().getContentAsString();
         assertThatJson(body).isNotNull().and(
-                json -> json.node("id").isPresent(),
+                json -> json.node("id").isEqualTo(user.getId()),
                 json -> json.node("firstName").isEqualTo(user.getFirstName()),
                 json -> json.node("lastName").isEqualTo(user.getLastName()),
                 json -> json.node("email").isEqualTo(user.getEmail()),
-                json -> json.node("createdAt").isPresent()
+                json -> json.node("createdAt").isEqualTo(user.getCreatedAt().format(TestUtils.FORMATTER))
         );
 
         var receivedUser = om.readValue(body, User.class);
@@ -118,16 +114,21 @@ public class UserControllerTest {
                 .andReturn();
 
         var body = result.getResponse().getContentAsString();
-        assertThatJson(body).and(
-                json -> json.node("firstName").isEqualTo(user.getFirstName()),
-                json -> json.node("lastName").isEqualTo(user.getLastName()),
-                json -> json.node("email").isEqualTo(user.getEmail())
-        );
 
         var id = om.readTree(body).get("id").asLong();
         assertThat(userRepository.findById(id)).isPresent();
 
-        var userHashedPassword = userRepository.findByEmail(user.getEmail()).get().getPassword();
+        var addedUser = userRepository.findById(id).get();
+
+        assertThatJson(body).and(
+                json -> json.node("id").isEqualTo(addedUser.getId()),
+                json -> json.node("firstName").isEqualTo(addedUser.getFirstName()),
+                json -> json.node("lastName").isEqualTo(addedUser.getLastName()),
+                json -> json.node("email").isEqualTo(addedUser.getEmail()),
+                json -> json.node("createdAt").isEqualTo(addedUser.getCreatedAt().format(TestUtils.FORMATTER))
+        );
+
+        var userHashedPassword = addedUser.getPassword();
         assertThat(userPassword).isNotEqualTo(userHashedPassword);
     }
 
@@ -137,7 +138,6 @@ public class UserControllerTest {
         var userPassword = user.getPassword();
         userRepository.save(user);
 
-        var createdAt = user.getCreatedAt();
         var oldEmail = user.getEmail();
         var newEmail = "new@gmail.com";
         var newName = "Elisa";
@@ -161,11 +161,9 @@ public class UserControllerTest {
         assertThat(user.getEmail()).isEqualTo(newEmail);
         assertThat(user.getFirstName()).isEqualTo(newName);
         assertThat(userRepository.findByEmail(oldEmail)).isEmpty();
+        assertThat(userRepository.findByEmail(newEmail).get()).isEqualTo(user);
 
-        assertThat(user.getCreatedAt().truncatedTo(ChronoUnit.SECONDS))
-                .isEqualTo(createdAt.truncatedTo(ChronoUnit.SECONDS));
-
-        var userHashedPassword = userRepository.findByEmail(user.getEmail()).get().getPassword();
+        var userHashedPassword = user.getPassword();
         assertThat(userPassword).isNotEqualTo(userHashedPassword);
     }
 

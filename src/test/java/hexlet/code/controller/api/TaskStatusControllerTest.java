@@ -62,11 +62,8 @@ public class TaskStatusControllerTest {
 
     @Test
     public void testIndex() throws Exception {
-        var taskStatus1 = testUtils.generateTaskStatus();
-        var taskStatus2 = testUtils.generateTaskStatus();
-
-        taskStatusRepository.save(taskStatus1);
-        taskStatusRepository.save(taskStatus2);
+        var taskStatus = testUtils.generateTaskStatus();
+        taskStatusRepository.save(taskStatus);
 
         var result = mockMvc.perform(get("/api/task_statuses").with(token))
                 .andExpect(status().isOk())
@@ -90,10 +87,10 @@ public class TaskStatusControllerTest {
 
         var body = result.getResponse().getContentAsString();
         assertThatJson(body).isNotNull().and(
-                json -> json.node("id").isPresent(),
+                json -> json.node("id").isEqualTo(taskStatus.getId()),
                 json -> json.node("name").isEqualTo(taskStatus.getName()),
                 json -> json.node("slug").isEqualTo(taskStatus.getSlug()),
-                json -> json.node("createdAt").isPresent()
+                json -> json.node("createdAt").isEqualTo(taskStatus.getCreatedAt().format(TestUtils.FORMATTER))
         );
 
         var receivedTaskStatus = om.readValue(body, TaskStatus.class);
@@ -114,15 +111,18 @@ public class TaskStatusControllerTest {
                 .andReturn();
 
         var body = result.getResponse().getContentAsString();
-        assertThatJson(body).isNotNull().and(
-                json -> json.node("id").isPresent(),
-                json -> json.node("name").isEqualTo(taskStatus.getName()),
-                json -> json.node("slug").isEqualTo(taskStatus.getSlug()),
-                json -> json.node("createdAt").isPresent()
-        );
 
         var id = om.readTree(body).get("id").asLong();
         assertThat(taskStatusRepository.findById(id)).isPresent();
+
+        var addedTaskStatus = taskStatusRepository.findById(id).get();
+
+        assertThatJson(body).isNotNull().and(
+                json -> json.node("id").isEqualTo(addedTaskStatus.getId()),
+                json -> json.node("name").isEqualTo(addedTaskStatus.getName()),
+                json -> json.node("slug").isEqualTo(addedTaskStatus.getSlug()),
+                json -> json.node("createdAt").isEqualTo(addedTaskStatus.getCreatedAt().format(TestUtils.FORMATTER))
+        );
     }
 
     @Test
@@ -162,7 +162,7 @@ public class TaskStatusControllerTest {
 
         assertThat(taskStatus.getSlug()).isEqualTo(newSlug);
         assertThat(taskStatusRepository.findBySlug(oldSlug)).isEmpty();
-        assertThat(taskStatusRepository.findBySlug(taskStatus.getSlug())).isPresent();
+        assertThat(taskStatusRepository.findBySlug(taskStatus.getSlug())).get().isEqualTo(taskStatus);
     }
 
     @Test

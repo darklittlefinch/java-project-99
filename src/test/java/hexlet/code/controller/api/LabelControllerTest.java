@@ -63,11 +63,8 @@ public class LabelControllerTest {
 
     @Test
     public void testIndex() throws Exception {
-        var label1 = testUtils.generateLabel();
-        var label2 = testUtils.generateLabel();
-
-        labelRepository.save(label1);
-        labelRepository.save(label2);
+        var label = testUtils.generateLabel();
+        labelRepository.save(label);
 
         var result = mockMvc.perform(get("/api/labels").with(token))
                 .andExpect(status().isOk())
@@ -91,9 +88,9 @@ public class LabelControllerTest {
 
         var body = result.getResponse().getContentAsString();
         assertThatJson(body).isNotNull().and(
-                json -> json.node("id").isPresent(),
+                json -> json.node("id").isEqualTo(label.getId()),
                 json -> json.node("name").isEqualTo(label.getName()),
-                json -> json.node("createdAt").isPresent()
+                json -> json.node("createdAt").isEqualTo(label.getCreatedAt().format(TestUtils.FORMATTER))
         );
 
         var receivedLabel = om.readValue(body, Label.class);
@@ -114,14 +111,17 @@ public class LabelControllerTest {
                 .andReturn();
 
         var body = result.getResponse().getContentAsString();
-        assertThatJson(body).isNotNull().and(
-                json -> json.node("id").isPresent(),
-                json -> json.node("name").isEqualTo(label.getName()),
-                json -> json.node("createdAt").isPresent()
-        );
 
         var id = om.readTree(body).get("id").asLong();
         assertThat(labelRepository.findById(id)).isPresent();
+
+        var addedLabel = labelRepository.findById(id).get();
+
+        assertThatJson(body).isNotNull().and(
+                json -> json.node("id").isEqualTo(addedLabel.getId()),
+                json -> json.node("name").isEqualTo(addedLabel.getName()),
+                json -> json.node("createdAt").isEqualTo(addedLabel.getCreatedAt().format(TestUtils.FORMATTER))
+        );
     }
 
     @Test
@@ -139,14 +139,8 @@ public class LabelControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(om.writeValueAsString(data));
 
-        var result = mockMvc.perform(request)
-                .andExpect(status().isOk())
-                .andReturn();
-
-        var body = result.getResponse().getContentAsString();
-        assertThatJson(body).isNotNull().and(
-                json -> json.node("name").isEqualTo(newName)
-        );
+        mockMvc.perform(request)
+                .andExpect(status().isOk());
 
         label = labelRepository.findById(label.getId()).get();
         assertThat(label.getName()).isEqualTo(newName);
