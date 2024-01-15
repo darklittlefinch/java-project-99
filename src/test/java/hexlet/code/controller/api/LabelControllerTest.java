@@ -165,14 +165,8 @@ public class LabelControllerTest {
         var task = testUtils.generateTask();
         taskRepository.save(task);
 
-        var label = testUtils.generateLabel();
-        labelRepository.save(label);
-
-        task.getLabels().add(label);
-        label.getTasks().add(task);
-
+        var label = task.getLabels().iterator().next();
         taskRepository.save(task);
-        labelRepository.save(label);
 
         mockMvc.perform(delete("/api/labels/" + label.getId()).with(token))
                 .andExpect(status().isMethodNotAllowed());
