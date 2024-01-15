@@ -44,6 +44,6 @@ public class TaskStatus implements BaseEntity {
     @CreatedDate
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "taskStatus", cascade = CascadeType.MERGE, orphanRemoval = true)
+    @OneToMany(mappedBy = "taskStatus", cascade = CascadeType.MERGE)
     private List<Task> tasks = new ArrayList<>();
 }

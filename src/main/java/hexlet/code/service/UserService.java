@@ -3,7 +3,6 @@ package hexlet.code.service;
 import hexlet.code.dto.userDto.UserCreateDTO;
 import hexlet.code.dto.userDto.UserDTO;
 import hexlet.code.dto.userDto.UserUpdateDTO;
-import hexlet.code.exception.AssociatedWithEntityException;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.UserMapper;
 import hexlet.code.repository.UserRepository;
@@ -64,12 +63,6 @@ public class UserService {
     }
 
     public void delete(Long id) {
-        var currentUser = userUtils.getCurrentUser();
-
-        if (!currentUser.getTasks().isEmpty()) {
-            throw new AssociatedWithEntityException("You still have some tasks!");
-        }
-
         userRepository.deleteById(id);
     }
 }

@@ -1,5 +1,6 @@
 package hexlet.code.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -38,6 +39,6 @@ public class Label implements BaseEntity {
     @CreatedDate
     private LocalDateTime createdAt;
 
-    @ManyToMany(mappedBy = "labels")
+    @ManyToMany(mappedBy = "labels", cascade = CascadeType.MERGE)
     private List<Task> tasks;
 }
