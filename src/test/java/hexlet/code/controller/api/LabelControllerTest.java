@@ -95,6 +95,9 @@ public class LabelControllerTest {
                 json -> json.node("name").isEqualTo(label.getName()),
                 json -> json.node("createdAt").isPresent()
         );
+
+        var receivedLabel = om.readValue(body, Label.class);
+        assertThat(receivedLabel).isEqualTo(label);
     }
 
     @Test

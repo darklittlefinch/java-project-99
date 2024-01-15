@@ -98,6 +98,9 @@ public class UserControllerTest {
                 json -> json.node("email").isEqualTo(user.getEmail()),
                 json -> json.node("createdAt").isPresent()
         );
+
+        var receivedUser = om.readValue(body, User.class);
+        assertThat(receivedUser).isEqualTo(user);
     }
 
     @Test

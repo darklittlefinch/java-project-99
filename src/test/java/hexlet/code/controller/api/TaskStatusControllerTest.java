@@ -95,6 +95,9 @@ public class TaskStatusControllerTest {
                 json -> json.node("slug").isEqualTo(taskStatus.getSlug()),
                 json -> json.node("createdAt").isPresent()
         );
+
+        var receivedTaskStatus = om.readValue(body, TaskStatus.class);
+        assertThat(receivedTaskStatus).isEqualTo(taskStatus);
     }
 
     @Test
