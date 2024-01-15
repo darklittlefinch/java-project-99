@@ -10,7 +10,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hexlet.code.model.Label;
 import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.util.TestUtils;
@@ -26,6 +28,7 @@ import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequ
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.HashMap;
+import java.util.List;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -60,8 +63,21 @@ public class LabelControllerTest {
 
     @Test
     public void testIndex() throws Exception {
-        mockMvc.perform(get("/api/labels").with(token))
-                .andExpect(status().isOk());
+        var label1 = testUtils.generateLabel();
+        var label2 = testUtils.generateLabel();
+
+        labelRepository.save(label1);
+        labelRepository.save(label2);
+
+        var result = mockMvc.perform(get("/api/labels").with(token))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        var body = result.getResponse().getContentAsString();
+        var labels = om.readValue(body, new TypeReference<List<Label>>() { });
+        var expected = labelRepository.findAll();
+
+        assertThat(labels).containsAll(expected);
     }
 
     @Test

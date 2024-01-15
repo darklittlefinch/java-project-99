@@ -9,11 +9,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.assertj.core.api.Assertions.assertThat;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.mapper.TaskMapper;
-import hexlet.code.repository.LabelRepository;
-import hexlet.code.repository.TaskStatusRepository;
-import hexlet.code.repository.UserRepository;
+import hexlet.code.model.Task;
 import hexlet.code.util.TestUtils;
 import hexlet.code.util.UserUtils;
 import net.javacrumbs.jsonunit.core.Option;
@@ -64,8 +63,21 @@ public class TaskControllerTest {
 
     @Test
     public void testIndex() throws Exception {
-        mockMvc.perform(get("/api/tasks").with(token))
-                .andExpect(status().isOk());
+        var task1 = testUtils.generateTask();
+        var task2 = testUtils.generateTask();
+
+        taskRepository.save(task1);
+        taskRepository.save(task2);
+
+        var result = mockMvc.perform(get("/api/tasks").with(token))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        var body = result.getResponse().getContentAsString();
+        var tasks = om.readValue(body, new TypeReference<List<Task>>() { });
+        var expected = taskRepository.findAll();
+
+        assertThat(tasks).containsAll(expected);
     }
 
     @Test

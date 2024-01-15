@@ -9,7 +9,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.assertj.core.api.Assertions.assertThat;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hexlet.code.model.TaskStatus;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.util.TestUtils;
 import hexlet.code.util.UserUtils;
@@ -25,6 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import hexlet.code.repository.TaskStatusRepository;
 
 import java.util.HashMap;
+import java.util.List;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -59,8 +62,21 @@ public class TaskStatusControllerTest {
 
     @Test
     public void testIndex() throws Exception {
-        mockMvc.perform(get("/api/task_statuses").with(token))
-                .andExpect(status().isOk());
+        var taskStatus1 = testUtils.generateTaskStatus();
+        var taskStatus2 = testUtils.generateTaskStatus();
+
+        taskStatusRepository.save(taskStatus1);
+        taskStatusRepository.save(taskStatus2);
+
+        var result = mockMvc.perform(get("/api/task_statuses").with(token))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        var body = result.getResponse().getContentAsString();
+        var taskStatuses = om.readValue(body, new TypeReference<List<TaskStatus>>() { });
+        var expected = taskStatusRepository.findAll();
+
+        assertThat(taskStatuses).containsAll(expected);
     }
 
     @Test

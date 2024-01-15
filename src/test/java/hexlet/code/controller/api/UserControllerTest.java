@@ -10,6 +10,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import hexlet.code.model.User;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.util.UserUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -27,6 +29,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
+import java.util.List;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -61,8 +64,21 @@ public class UserControllerTest {
 
     @Test
     public void testIndex() throws Exception {
-        mockMvc.perform(get("/api/users").with(token))
-                .andExpect(status().isOk());
+        var user1 = testUtils.generateUser();
+        var user2 = testUtils.generateUser();
+
+        userRepository.save(user1);
+        userRepository.save(user2);
+
+        var result = mockMvc.perform(get("/api/users").with(token))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        var body = result.getResponse().getContentAsString();
+        var users = om.readValue(body, new TypeReference<List<User>>() { });
+        var expected = userRepository.findAll();
+
+        assertThat(users).containsAll(expected);
     }
 
     @Test
